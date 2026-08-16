@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Startpage</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,450;1,9..144,400&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --overlay-top: rgba(8,9,14,.55);
+    --overlay-bottom: rgba(8,9,14,.7);
+    --glass-bg: rgba(255,255,255,.12);
+    --glass-bg-hover: rgba(255,255,255,.18);
+    --glass-border: rgba(255,255,255,.26);
+    --text: #f7f5f0;
+    --text-dim: rgba(247,245,240,.68);
+    --text-faint: rgba(247,245,240,.44);
+    --accent: #f2c879;
+    --danger: #e8776a;
+    --radius: 18px;
+  }
+  *{ box-sizing: border-box; }
+  html,body{
+    margin:0; padding:0; width:100%; height:100%;
+    font-family:'Manrope', sans-serif;
+    color: var(--text);
+    overflow: hidden;
+  }
+  body{
+    position:relative;
+    background: radial-gradient(circle at 30% 20%, #3a3f52, #14151d 70%);
+    background-size: cover;
+    background-position: center;
+  }
+  .bg-photo{
+    position:absolute; inset:0;
+    background-image: var(--bg-image, none);
+    background-size: cover;
+    background-position: center;
+    transition: opacity .6s ease;
+  }
+  .bg-overlay{
+    position:absolute; inset:0;
+    background: linear-gradient(180deg, var(--overlay-top) 0%, rgba(8,9,14,.25) 45%, var(--overlay-bottom) 100%);
+  }
+  .stage{
+    position:relative; z-index:2;
+    height:100vh; width:100%;
+    display:flex; flex-direction:column;
+    align-items:center; justify-content:center;
+    padding: 6vh 24px 4vh;
+  }
+  .greeting{
+    font-family:'Fraunces', serif;
+    font-weight:400; font-style:italic;
+    font-size: clamp(16px, 2.2vw, 20px);
+    color: var(--text-dim);
+    letter-spacing: .02em;
+    margin: 0 0 6px;
+    opacity:0;
+    animation: rise .8s ease forwards .1s;
+  }
+  .clock{
+    font-family:'Fraunces', serif;
+    font-weight:300;
+    font-size: clamp(64px, 13vw, 128px);
+    line-height:1;
+    letter-spacing: -.02em;
+    margin:0;
+    text-shadow: 0 4px 40px rgba(0,0,0,.35);
+    opacity:0;
+    animation: rise .8s ease forwards .25s;
+    font-variant-numeric: tabular-nums;
+  }
+  .date{
+    margin: 10px 0 0;
+    font-size: 14px;
+    color: var(--text-dim);
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    opacity:0;
+    animation: rise .8s ease forwards .4s;
+  }
+  @keyframes rise{
+    from{ opacity:0; transform: translateY(10px); }
+    to{ opacity:1; transform: translateY(0); }
+  }
+  .search-form{
+    margin-top: 44px;
+    width: min(520px, 82vw);
+    opacity:0;
+    animation: rise .8s ease forwards .55s;
+  }
+  .search-box{
+    display:flex; align-items:center; gap:10px;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(22px);
+    -webkit-backdrop-filter: blur(22px);
+    border-radius: 999px;
+    padding: 13px 20px;
+    transition: background .2s ease, border-color .2s ease;
+  }
+  .search-box:focus-within{
+    background: var(--glass-bg-hover);
+    border-color: rgba(255,255,255,.4);
+  }
+  .search-box svg{ flex-shrink:0; opacity:.7; }
+  .search-box input{
+    flex:1; background:none; border:none; outline:none;
+    color: var(--text); font-family:'Manrope', sans-serif;
+    font-size: 15px;
+  }
+  .search-box input::placeholder{ color: var(--text-faint); }
+
+  .dock-wrap{
+    position:relative; z-index:2;
+    width:100%;
+    display:flex; justify-content:center;
+    padding: 0 20px 5vh;
+  }
+  .dock{
+    display:flex; align-items:flex-end; gap:16px;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border-radius: 24px;
+    padding: 16px 18px 12px;
+    max-width: min(900px, 92vw);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .dock::-webkit-scrollbar{ display:none; }
+  .tile{
+    position:relative;
+    display:flex; flex-direction:column; align-items:center;
+    gap:8px;
+    width: 68px;
+    flex-shrink:0;
+    cursor:pointer;
+    text-decoration:none;
+    color: inherit;
+    transition: transform .18s ease;
+  }
+  .tile:hover{ transform: translateY(-4px); }
+  .tile-icon{
+    width:44px; height:44px; border-radius:13px;
+    background: rgba(255,255,255,.9);
+    display:flex; align-items:center; justify-content:center;
+    overflow:hidden;
+    box-shadow: 0 6px 16px rgba(0,0,0,.25);
+  }
+  .tile-icon img{ width:24px; height:24px; }
+  .tile-icon.fallback{
+    background: var(--tile-color, #6c6f7c);
+    color:#fff; font-family:'Fraunces', serif; font-weight:500; font-size:17px;
+  }
+  .tile-label{
+    font-size:11.5px;
+    color: var(--text-dim);
+    text-align:center;
+    max-width:68px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .tile-remove{
+    position:absolute; top:-6px; right:6px;
+    width:18px; height:18px; border-radius:50%;
+    background: var(--danger);
+    color:#fff; border:none;
+    display:none; align-items:center; justify-content:center;
+    font-size:12px; line-height:1; cursor:pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,.4);
+  }
+  .tile:hover .tile-remove{ display:flex; }
+
+  .add-tile .tile-icon{
+    background: transparent;
+    border: 1.5px dashed rgba(255,255,255,.5);
+    color: var(--text);
+    font-size: 20px;
+    box-shadow:none;
+  }
+  .add-tile .tile-label{ color: var(--text-faint); }
+
+  .settings-btn{
+    position:absolute; top:20px; right:20px; z-index:3;
+    width:38px; height:38px; border-radius:50%;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(16px);
+    color: var(--text-dim);
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer;
+    transition: background .2s ease, transform .3s ease;
+  }
+  .settings-btn:hover{ background: var(--glass-bg-hover); color: var(--text); }
+  .settings-btn.open{ transform: rotate(60deg); }
+
+  .panel{
+    position:absolute; top:68px; right:20px; z-index:3;
+    width: 260px;
+    background: rgba(20,21,28,.72);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border-radius: 16px;
+    padding: 16px;
+    display:none;
+    flex-direction:column; gap:12px;
+    box-shadow: 0 12px 32px rgba(0,0,0,.4);
+  }
+  .panel.open{ display:flex; }
+  .panel-title{ font-size:13px; font-weight:600; color: var(--text); margin:0; }
+  .panel label{
+    font-size:12px; color: var(--text-dim);
+    display:flex; flex-direction:column; gap:6px;
+  }
+  .file-btn, .ghost-btn{
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    color: var(--text);
+    padding: 9px 12px;
+    border-radius: 10px;
+    font-family:'Manrope', sans-serif;
+    font-size: 13px;
+    cursor:pointer;
+    text-align:center;
+    transition: background .2s ease;
+  }
+  .file-btn:hover, .ghost-btn:hover{ background: var(--glass-bg-hover); }
+  .ghost-btn.danger{ color: var(--danger); border-color: rgba(232,119,106,.4); }
+  input[type=file]{ display:none; }
+  .panel small{ color: var(--text-faint); font-size:11px; line-height:1.5; }
+
+  .modal-backdrop{
+    position:fixed; inset:0; z-index:10;
+    background: rgba(0,0,0,.45);
+    display:none; align-items:center; justify-content:center;
+  }
+  .modal-backdrop.open{ display:flex; }
+  .modal{
+    width: min(360px, 88vw);
+    background: rgba(22,23,30,.85);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(28px);
+    -webkit-backdrop-filter: blur(28px);
+    border-radius: 18px;
+    padding: 22px;
+    display:flex; flex-direction:column; gap:14px;
+  }
+  .modal h3{
+    margin:0; font-family:'Fraunces', serif; font-weight:400; font-size:19px;
+  }
+  .modal label{ font-size:12px; color: var(--text-dim); display:flex; flex-direction:column; gap:6px; }
+  .modal input{
+    background: rgba(255,255,255,.08);
+    border: 1px solid rgba(255,255,255,.18);
+    border-radius: 10px;
+    padding: 10px 12px;
+    color: var(--text);
+    font-family:'Manrope', sans-serif;
+    font-size: 14px;
+    outline:none;
+  }
+  .modal input:focus{ border-color: var(--accent); }
+  .modal-actions{ display:flex; gap:10px; margin-top:4px; }
+  .modal-actions button{ flex:1; }
+  .primary-btn{
+    background: var(--accent);
+    color: #2a1f0c;
+    border:none;
+    padding: 10px 12px;
+    border-radius: 10px;
+    font-family:'Manrope', sans-serif;
+    font-weight:600;
+    font-size: 13px;
+    cursor:pointer;
+  }
+  .error-text{ font-size:12px; color: var(--danger); display:none; }
+  .hint{
+    position:absolute; z-index:2; bottom: 5vh; left:50%; transform:translateX(-50%);
+    font-size:12px; color: var(--text-faint);
+    display:none; pointer-events:none;
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-photo" id="bgPhoto"></div>
+<div class="bg-overlay"></div>
+
+<button class="settings-btn" id="settingsBtn" title="Pengaturan" aria-label="Pengaturan">
+  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+</button>
+
+<div class="panel" id="settingsPanel">
+  <p class="panel-title">Latar belakang</p>
+  <label>
+    <button class="file-btn" type="button" id="chooseFileBtn">Pilih foto sendiri</button>
+    <input type="file" id="fileInput" accept="image/*">
+  </label>
+  <button class="ghost-btn danger" id="resetBgBtn">Hapus foto latar</button>
+  <small>Foto disimpan otomatis dan tetap ada saat kamu membuka halaman ini lagi.</small>
+</div>
+
+<div class="stage">
+  <p class="greeting" id="greeting">Selamat datang</p>
+  <h1 class="clock" id="clock">--:--</h1>
+  <p class="date" id="dateLine"></p>
+
+  <form class="search-form" id="searchForm">
+    <div class="search-box">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><path d="m21 21-4.35-4.35"></path></svg>
+      <input type="text" id="searchInput" placeholder="Cari di web…" autocomplete="off">
+    </div>
+  </form>
+</div>
+
+<p class="hint" id="hint">Klik ikon gerigi di kanan atas untuk memasang foto sendiri sebagai latar</p>
+
+<div class="dock-wrap">
+  <div class="dock" id="dock"></div>
+</div>
+
+<div class="modal-backdrop" id="modalBackdrop">
+  <div class="modal">
+    <h3>Tambah tautan</h3>
+    <label>Nama
+      <input type="text" id="linkName" placeholder="Misal: Gmail">
+    </label>
+    <label>Alamat web
+      <input type="text" id="linkUrl" placeholder="misal: mail.google.com">
+    </label>
+    <p class="error-text" id="modalError"></p>
+    <div class="modal-actions">
+      <button class="ghost-btn" type="button" id="cancelModalBtn">Batal</button>
+      <button class="primary-btn" type="button" id="saveLinkBtn">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let links = [];
+const tileColors = ['#6c63b5','#3f8f76','#b5603f','#3f7ab5','#a8477a','#5a7a3f','#7a5a3f','#4a5aa8'];
+
+function colorForName(name){
+  let hash = 0;
+  for(let i=0;i<name.length;i++){ hash = name.charCodeAt(i) + ((hash<<5)-hash); }
+  return tileColors[Math.abs(hash) % tileColors.length];
+}
+
+function normalizeUrl(raw){
+  let v = raw.trim();
+  if(!v) return null;
+  if(!/^https?:\/\//i.test(v)){ v = 'https://' + v; }
+  try{ new URL(v); return v; } catch(e){ return null; }
+}
+
+function hostOf(url){
+  try{ return new URL(url).hostname; } catch(e){ return ''; }
+}
+
+async function loadLinks(){
+  try{
+    const res = await window.storage.get('startpage-links', false);
+    links = res ? JSON.parse(res.value) : [];
+  }catch(e){
+    links = [];
+  }
+  renderDock();
+}
+
+async function saveLinks(){
+  try{
+    await window.storage.set('startpage-links', JSON.stringify(links), false);
+  }catch(e){
+    console.error('Gagal menyimpan tautan', e);
+  }
+}
+
+function renderDock(){
+  const dock = document.getElementById('dock');
+  dock.innerHTML = '';
+  links.forEach(link=>{
+    const a = document.createElement('a');
+    a.className = 'tile';
+    a.href = link.url;
+    a.target = '_self';
+
+    const icon = document.createElement('div');
+    icon.className = 'tile-icon';
+    const img = document.createElement('img');
+    img.src = `https://www.google.com/s2/favicons?domain=${hostOf(link.url)}&sz=64`;
+    img.alt = '';
+    img.onerror = function(){
+      icon.classList.add('fallback');
+      icon.style.setProperty('--tile-color', colorForName(link.name));
+      icon.textContent = link.name.trim().charAt(0).toUpperCase() || '?';
+      img.remove();
+    };
+    icon.appendChild(img);
+
+    const removeBtn = document.createElement('button');
+    removeBtn.className = 'tile-remove';
+    removeBtn.type = 'button';
+    removeBtn.textContent = '\u00d7';
+    removeBtn.setAttribute('aria-label', 'Hapus ' + link.name);
+    removeBtn.addEventListener('click', function(e){
+      e.preventDefault(); e.stopPropagation();
+      links = links.filter(l => l.id !== link.id);
+      renderDock();
+      saveLinks();
+    });
+
+    const label = document.createElement('div');
+    label.className = 'tile-label';
+    label.textContent = link.name;
+
+    a.appendChild(icon);
+    a.appendChild(removeBtn);
+    a.appendChild(label);
+    dock.appendChild(a);
+  });
+
+  const addTile = document.createElement('div');
+  addTile.className = 'tile add-tile';
+  addTile.innerHTML = `
+    <div class="tile-icon">+</div>
+    <div class="tile-label">Tambah</div>
+  `;
+  addTile.addEventListener('click', openModal);
+  dock.appendChild(addTile);
+}
+
+function openModal(){
+  document.getElementById('linkName').value = '';
+  document.getElementById('linkUrl').value = '';
+  document.getElementById('modalError').style.display = 'none';
+  document.getElementById('modalBackdrop').classList.add('open');
+  document.getElementById('linkName').focus();
+}
+function closeModal(){
+  document.getElementById('modalBackdrop').classList.remove('open');
+}
+
+document.getElementById('cancelModalBtn').addEventListener('click', closeModal);
+document.getElementById('modalBackdrop').addEventListener('click', function(e){
+  if(e.target === this) closeModal();
+});
+
+document.getElementById('saveLinkBtn').addEventListener('click', function(){
+  const nameEl = document.getElementById('linkName');
+  const urlEl = document.getElementById('linkUrl');
+  const errorEl = document.getElementById('modalError');
+  const name = nameEl.value.trim();
+  const url = normalizeUrl(urlEl.value);
+
+  if(!name){
+    errorEl.textContent = 'Isi nama tautan dulu.';
+    errorEl.style.display = 'block';
+    return;
+  }
+  if(!url){
+    errorEl.textContent = 'Alamat web belum valid.';
+    errorEl.style.display = 'block';
+    return;
+  }
+  errorEl.style.display = 'none';
+
+  links.push({ id: Date.now().toString(36), name, url });
+  renderDock();
+  saveLinks();
+  closeModal();
+});
+
+document.getElementById('linkUrl').addEventListener('keydown', function(e){
+  if(e.key === 'Enter'){ document.getElementById('saveLinkBtn').click(); }
+});
+document.getElementById('linkName').addEventListener('keydown', function(e){
+  if(e.key === 'Enter'){ document.getElementById('linkUrl').focus(); }
+});
+
+const settingsBtn = document.getElementById('settingsBtn');
+const settingsPanel = document.getElementById('settingsPanel');
+settingsBtn.addEventListener('click', function(){
+  settingsBtn.classList.toggle('open');
+  settingsPanel.classList.toggle('open');
+});
+document.addEventListener('click', function(e){
+  if(!settingsPanel.contains(e.target) && !settingsBtn.contains(e.target)){
+    settingsPanel.classList.remove('open');
+    settingsBtn.classList.remove('open');
+  }
+});
+
+document.getElementById('chooseFileBtn').addEventListener('click', function(){
+  document.getElementById('fileInput').click();
+});
+
+document.getElementById('fileInput').addEventListener('change', function(e){
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(ev){
+    const img = new Image();
+    img.onload = function(){
+      const canvas = document.createElement('canvas');
+      const maxW = 1920;
+      const scale = Math.min(1, maxW / img.width);
+      canvas.width = Math.round(img.width * scale);
+      canvas.height = Math.round(img.height * scale);
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      let quality = 0.82;
+      let dataUrl = canvas.toDataURL('image/jpeg', quality);
+      while(dataUrl.length > 4.3 * 1024 * 1024 && quality > 0.35){
+        quality -= 0.1;
+        dataUrl = canvas.toDataURL('image/jpeg', quality);
+      }
+      saveBackground(dataUrl);
+    };
+    img.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+});
+
+async function saveBackground(dataUrl){
+  try{
+    await window.storage.set('startpage-bg', dataUrl, false);
+    applyBackground(dataUrl);
+  }catch(e){
+    alert('Foto gagal disimpan, mungkin ukurannya terlalu besar. Coba foto lain.');
+  }
+}
+
+function applyBackground(dataUrl){
+  document.getElementById('bgPhoto').style.setProperty('--bg-image', `url(${dataUrl})`);
+  document.getElementById('hint').style.display = 'none';
+}
+
+document.getElementById('resetBgBtn').addEventListener('click', async function(){
+  try{ await window.storage.delete('startpage-bg', false); }catch(e){}
+  document.getElementById('bgPhoto').style.removeProperty('--bg-image');
+  document.getElementById('hint').style.display = 'block';
+});
+
+async function loadBackground(){
+  try{
+    const res = await window.storage.get('startpage-bg', false);
+    if(res && res.value){
+      applyBackground(res.value);
+    } else {
+      document.getElementById('hint').style.display = 'block';
+    }
+  }catch(e){
+    document.getElementById('hint').style.display = 'block';
+  }
+}
+
+function updateClock(){
+  const now = new Date();
+  const h = now.getHours();
+  const m = String(now.getMinutes()).padStart(2, '0');
+  document.getElementById('clock').textContent = `${String(h).padStart(2,'0')}:${m}`;
+
+  let greeting = 'Selamat malam';
+  if(h < 11) greeting = 'Selamat pagi';
+  else if(h < 15) greeting = 'Selamat siang';
+  else if(h < 18) greeting = 'Selamat sore';
+  document.getElementById('greeting').textContent = greeting;
+
+  const days = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+  const months = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+  document.getElementById('dateLine').textContent = `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+}
+
+document.getElementById('searchForm').addEventListener('submit', function(e){
+  e.preventDefault();
+  const q = document.getElementById('searchInput').value.trim();
+  if(!q) return;
+  window.open('https://www.google.com/search?q=' + encodeURIComponent(q), '_self');
+});
+
+updateClock();
+setInterval(updateClock, 1000 * 10);
+loadLinks();
+loadBackground();
+</script>
+
+</body>
+</html>
