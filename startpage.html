@@ -34,16 +34,41 @@
     background-size: cover;
     background-position: center;
   }
+  .bg-wrap{
+    position:absolute; inset:-3%;
+    will-change: transform;
+  }
   .bg-photo{
     position:absolute; inset:0;
     background-image: var(--bg-image, none);
     background-size: cover;
     background-position: center;
     transition: opacity .6s ease;
+    transform-origin: 50% 50%;
+    animation: kenburns 38s ease-in-out infinite alternate;
+  }
+  @keyframes kenburns{
+    from{ transform: scale(1); }
+    to{ transform: scale(1.09); }
   }
   .bg-overlay{
     position:absolute; inset:0;
     background: linear-gradient(180deg, var(--overlay-top) 0%, rgba(8,9,14,.25) 45%, var(--overlay-bottom) 100%);
+  }
+  .cursor-glow{
+    position:fixed; top:0; left:0;
+    width:380px; height:380px;
+    border-radius:50%;
+    background: radial-gradient(circle, rgba(242,200,121,.16), rgba(242,200,121,0) 70%);
+    transform: translate(-50%,-50%);
+    pointer-events:none;
+    z-index:1;
+    mix-blend-mode: screen;
+    opacity:0;
+    transition: opacity .4s ease;
+  }
+  @media (prefers-reduced-motion: reduce){
+    .bg-photo{ animation:none; }
   }
   .stage{
     position:relative; z-index:2;
@@ -152,6 +177,8 @@
     display:flex; align-items:center; justify-content:center;
     overflow:hidden;
     box-shadow: 0 6px 16px rgba(0,0,0,.25);
+    transition: transform .15s cubic-bezier(.2,.9,.3,1.2);
+    transform-origin: 50% 100%;
   }
   .tile-icon img{ width:24px; height:24px; }
   .tile-icon.fallback{
@@ -291,8 +318,11 @@
 </head>
 <body>
 
-<div class="bg-photo" id="bgPhoto"></div>
+<div class="bg-wrap" id="bgWrap">
+  <div class="bg-photo" id="bgPhoto"></div>
+</div>
 <div class="bg-overlay"></div>
+<div class="cursor-glow" id="cursorGlow"></div>
 
 <button class="settings-btn" id="settingsBtn" title="Pengaturan" aria-label="Pengaturan">
   <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
@@ -590,6 +620,62 @@ updateClock();
 setInterval(updateClock, 1000 * 10);
 loadLinks();
 loadBackground();
+
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+if(!reduceMotion){
+  const bgWrap = document.getElementById('bgWrap');
+  const glow = document.getElementById('cursorGlow');
+  let targetX = window.innerWidth / 2, targetY = window.innerHeight / 2;
+  let panX = 0, panY = 0;
+  let glowX = targetX, glowY = targetY;
+
+  document.addEventListener('mousemove', function(e){
+    targetX = e.clientX;
+    targetY = e.clientY;
+    glow.style.opacity = 1;
+  });
+  document.addEventListener('mouseleave', function(){
+    glow.style.opacity = 0;
+  });
+
+  function ambientLoop(){
+    const nx = (targetX / window.innerWidth - 0.5);
+    const ny = (targetY / window.innerHeight - 0.5);
+    panX += ((nx * -24) - panX) * 0.05;
+    panY += ((ny * -18) - panY) * 0.05;
+    bgWrap.style.transform = `translate(${panX.toFixed(2)}px, ${panY.toFixed(2)}px)`;
+
+    glowX += (targetX - glowX) * 0.1;
+    glowY += (targetY - glowY) * 0.1;
+    glow.style.left = glowX + 'px';
+    glow.style.top = glowY + 'px';
+
+    requestAnimationFrame(ambientLoop);
+  }
+  ambientLoop();
+}
+
+const dockEl = document.getElementById('dock');
+dockEl.addEventListener('mousemove', function(e){
+  if(reduceMotion) return;
+  const icons = dockEl.querySelectorAll('.tile-icon');
+  const maxDist = 90;
+  icons.forEach(function(icon){
+    const rect = icon.getBoundingClientRect();
+    const center = rect.left + rect.width / 2;
+    const dist = Math.abs(e.clientX - center);
+    if(dist < maxDist){
+      const scale = 1 + (1 - dist / maxDist) * 0.42;
+      icon.style.transform = `scale(${scale.toFixed(2)}) translateY(${(-(scale - 1) * 16).toFixed(1)}px)`;
+    } else {
+      icon.style.transform = '';
+    }
+  });
+});
+dockEl.addEventListener('mouseleave', function(){
+  dockEl.querySelectorAll('.tile-icon').forEach(function(icon){ icon.style.transform = ''; });
+});
 </script>
 
 </body>
