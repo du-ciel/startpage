@@ -375,6 +375,45 @@
 </div>
 
 <script>
+function idbOpen(){
+  return new Promise(function(resolve, reject){
+    const req = indexedDB.open('startpageDB', 1);
+    req.onupgradeneeded = function(){ req.result.createObjectStore('kv'); };
+    req.onsuccess = function(){ resolve(req.result); };
+    req.onerror = function(){ reject(req.error); };
+  });
+}
+function idbSet(key, value){
+  return idbOpen().then(function(db){
+    return new Promise(function(resolve, reject){
+      const tx = db.transaction('kv', 'readwrite');
+      tx.objectStore('kv').put(value, key);
+      tx.oncomplete = function(){ resolve(); };
+      tx.onerror = function(){ reject(tx.error); };
+    });
+  });
+}
+function idbGet(key){
+  return idbOpen().then(function(db){
+    return new Promise(function(resolve, reject){
+      const tx = db.transaction('kv', 'readonly');
+      const req = tx.objectStore('kv').get(key);
+      req.onsuccess = function(){ resolve(req.result); };
+      req.onerror = function(){ reject(req.error); };
+    });
+  });
+}
+function idbDelete(key){
+  return idbOpen().then(function(db){
+    return new Promise(function(resolve, reject){
+      const tx = db.transaction('kv', 'readwrite');
+      tx.objectStore('kv').delete(key);
+      tx.oncomplete = function(){ resolve(); };
+      tx.onerror = function(){ reject(tx.error); };
+    });
+  });
+}
+
 let links = [];
 const tileColors = ['#6c63b5','#3f8f76','#b5603f','#3f7ab5','#a8477a','#5a7a3f','#7a5a3f','#4a5aa8'];
 
@@ -395,19 +434,19 @@ function hostOf(url){
   try{ return new URL(url).hostname; } catch(e){ return ''; }
 }
 
-async function loadLinks(){
+function loadLinks(){
   try{
-    const res = await window.storage.get('startpage-links', false);
-    links = res ? JSON.parse(res.value) : [];
+    const raw = localStorage.getItem('startpage-links');
+    links = raw ? JSON.parse(raw) : [];
   }catch(e){
     links = [];
   }
   renderDock();
 }
 
-async function saveLinks(){
+function saveLinks(){
   try{
-    await window.storage.set('startpage-links', JSON.stringify(links), false);
+    localStorage.setItem('startpage-links', JSON.stringify(links));
   }catch(e){
     console.error('Gagal menyimpan tautan', e);
   }
@@ -540,15 +579,15 @@ document.getElementById('fileInput').addEventListener('change', function(e){
     const img = new Image();
     img.onload = function(){
       const canvas = document.createElement('canvas');
-      const maxW = 1920;
+      const maxW = 2560;
       const scale = Math.min(1, maxW / img.width);
       canvas.width = Math.round(img.width * scale);
       canvas.height = Math.round(img.height * scale);
       const ctx = canvas.getContext('2d');
       ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-      let quality = 0.82;
+      let quality = 0.88;
       let dataUrl = canvas.toDataURL('image/jpeg', quality);
-      while(dataUrl.length > 4.3 * 1024 * 1024 && quality > 0.35){
+      while(dataUrl.length > 15 * 1024 * 1024 && quality > 0.4){
         quality -= 0.1;
         dataUrl = canvas.toDataURL('image/jpeg', quality);
       }
@@ -559,13 +598,12 @@ document.getElementById('fileInput').addEventListener('change', function(e){
   reader.readAsDataURL(file);
 });
 
-async function saveBackground(dataUrl){
-  try{
-    await window.storage.set('startpage-bg', dataUrl, false);
+function saveBackground(dataUrl){
+  idbSet('bg', dataUrl).then(function(){
     applyBackground(dataUrl);
-  }catch(e){
-    alert('Foto gagal disimpan, mungkin ukurannya terlalu besar. Coba foto lain.');
-  }
+  }).catch(function(){
+    alert('Foto gagal disimpan. Coba foto lain atau muat ulang halaman ini.');
+  });
 }
 
 function applyBackground(dataUrl){
@@ -573,23 +611,22 @@ function applyBackground(dataUrl){
   document.getElementById('hint').style.display = 'none';
 }
 
-document.getElementById('resetBgBtn').addEventListener('click', async function(){
-  try{ await window.storage.delete('startpage-bg', false); }catch(e){}
+document.getElementById('resetBgBtn').addEventListener('click', function(){
+  idbDelete('bg').catch(function(){});
   document.getElementById('bgPhoto').style.removeProperty('--bg-image');
   document.getElementById('hint').style.display = 'block';
 });
 
-async function loadBackground(){
-  try{
-    const res = await window.storage.get('startpage-bg', false);
-    if(res && res.value){
-      applyBackground(res.value);
+function loadBackground(){
+  idbGet('bg').then(function(dataUrl){
+    if(dataUrl){
+      applyBackground(dataUrl);
     } else {
       document.getElementById('hint').style.display = 'block';
     }
-  }catch(e){
+  }).catch(function(){
     document.getElementById('hint').style.display = 'block';
-  }
+  });
 }
 
 function updateClock(){
