@@ -47,13 +47,27 @@
     transform-origin: 50% 50%;
     animation: kenburns 38s ease-in-out infinite alternate;
   }
+  .bg-photo.fading-in{
+    animation: kenburns 38s ease-in-out infinite alternate, bgReveal 1.1s ease both;
+  }
   @keyframes kenburns{
     from{ transform: scale(1); }
     to{ transform: scale(1.09); }
   }
+  @keyframes bgReveal{
+    from{ opacity:0; filter: blur(14px) saturate(.8); }
+    to{ opacity:1; filter: blur(0) saturate(1); }
+  }
   .bg-overlay{
     position:absolute; inset:0;
     background: linear-gradient(180deg, var(--overlay-top) 0%, rgba(8,9,14,.25) 45%, var(--overlay-bottom) 100%);
+  }
+  .grain{
+    position:absolute; inset:0; z-index:1;
+    pointer-events:none;
+    opacity:.035;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
   .cursor-glow{
     position:fixed; top:0; left:0;
@@ -66,10 +80,18 @@
     mix-blend-mode: screen;
     opacity:0;
     transition: opacity .4s ease;
+    animation: glowBreathe 6s ease-in-out infinite;
+  }
+  @keyframes glowBreathe{
+    0%,100%{ filter: brightness(1); }
+    50%{ filter: brightness(1.25); }
   }
   @media (prefers-reduced-motion: reduce){
     .bg-photo{ animation:none; }
+    .cursor-glow{ animation:none; }
   }
+
+  /* ---- Search stays centered on the stage ---- */
   .stage{
     position:relative; z-index:2;
     height:100vh; width:100%;
@@ -77,46 +99,10 @@
     align-items:center; justify-content:center;
     padding: 6vh 24px 4vh;
   }
-  .greeting{
-    font-family:'Fraunces', serif;
-    font-weight:400; font-style:italic;
-    font-size: clamp(16px, 2.2vw, 20px);
-    color: var(--text-dim);
-    letter-spacing: .02em;
-    margin: 0 0 6px;
-    opacity:0;
-    animation: rise .8s ease forwards .1s;
-  }
-  .clock{
-    font-family:'Fraunces', serif;
-    font-weight:300;
-    font-size: clamp(64px, 13vw, 128px);
-    line-height:1;
-    letter-spacing: -.02em;
-    margin:0;
-    text-shadow: 0 4px 40px rgba(0,0,0,.35);
-    opacity:0;
-    animation: rise .8s ease forwards .25s;
-    font-variant-numeric: tabular-nums;
-  }
-  .date{
-    margin: 10px 0 0;
-    font-size: 14px;
-    color: var(--text-dim);
-    letter-spacing: .06em;
-    text-transform: uppercase;
-    opacity:0;
-    animation: rise .8s ease forwards .4s;
-  }
-  @keyframes rise{
-    from{ opacity:0; transform: translateY(10px); }
-    to{ opacity:1; transform: translateY(0); }
-  }
   .search-form{
-    margin-top: 44px;
     width: min(520px, 82vw);
     opacity:0;
-    animation: rise .8s ease forwards .55s;
+    animation: rise .8s ease forwards .3s;
   }
   .search-box{
     display:flex; align-items:center; gap:10px;
@@ -126,19 +112,96 @@
     -webkit-backdrop-filter: blur(22px);
     border-radius: 999px;
     padding: 13px 20px;
-    transition: background .2s ease, border-color .2s ease;
+    transition: background .25s ease, border-color .25s ease, box-shadow .25s ease, transform .25s ease;
+  }
+  .search-box:hover{
+    transform: translateY(-1px);
   }
   .search-box:focus-within{
     background: var(--glass-bg-hover);
-    border-color: rgba(255,255,255,.4);
+    border-color: rgba(242,200,121,.55);
+    box-shadow: 0 0 0 4px rgba(242,200,121,.12), 0 8px 24px rgba(0,0,0,.25);
   }
-  .search-box svg{ flex-shrink:0; opacity:.7; }
+  .search-box svg{ flex-shrink:0; opacity:.7; transition: opacity .2s ease, transform .2s ease; }
+  .search-box:focus-within svg{ opacity:1; transform: scale(1.06); }
   .search-box input{
     flex:1; background:none; border:none; outline:none;
     color: var(--text); font-family:'Manrope', sans-serif;
     font-size: 15px;
   }
-  .search-box input::placeholder{ color: var(--text-faint); }
+  .search-box input::placeholder{ color: var(--text-faint); transition: color .2s ease; }
+  .search-box:focus-within input::placeholder{ color: var(--text-dim); }
+
+  @keyframes rise{
+    from{ opacity:0; transform: translateY(10px); }
+    to{ opacity:1; transform: translateY(0); }
+  }
+
+  /* ---- Clock cluster, anchored bottom-left ---- */
+  .corner-info{
+    position:absolute; z-index:2;
+    left: clamp(24px, 4vw, 52px);
+    bottom: clamp(24px, 5vh, 56px);
+    display:flex; flex-direction:column;
+    align-items:flex-start;
+    text-align:left;
+  }
+  .greeting{
+    font-family:'Fraunces', serif;
+    font-weight:400; font-style:italic;
+    font-size: clamp(14px, 1.6vw, 17px);
+    color: var(--text-dim);
+    letter-spacing: .02em;
+    margin: 0 0 2px;
+    opacity:0;
+    animation: rise .8s ease forwards .1s;
+  }
+  .clock{
+    position:relative;
+    font-family:'Fraunces', serif;
+    font-weight:300;
+    font-size: clamp(48px, 7vw, 84px);
+    line-height:1;
+    letter-spacing: -.02em;
+    margin:0;
+    text-shadow: 0 4px 40px rgba(0,0,0,.35);
+    opacity:0;
+    animation: rise .8s ease forwards .22s;
+    font-variant-numeric: tabular-nums;
+  }
+  .clock::after{
+    content:"";
+    position:absolute; left:2px; bottom:-4px;
+    width:34px; height:2px;
+    border-radius: 2px;
+    background: var(--accent);
+    opacity:0;
+    animation: underlineGrow .9s ease forwards .9s;
+  }
+  @keyframes underlineGrow{
+    from{ width:0; opacity:0; }
+    to{ width:34px; opacity:.75; }
+  }
+  .clock .colon{
+    animation: blink 2s steps(1,end) infinite;
+  }
+  @keyframes blink{
+    0%,45%{ opacity:1; }
+    50%,95%{ opacity:.25; }
+    100%{ opacity:1; }
+  }
+  .date{
+    margin: 8px 0 0;
+    font-size: 13px;
+    color: var(--text-dim);
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    opacity:0;
+    animation: rise .8s ease forwards .38s;
+  }
+  @media (prefers-reduced-motion: reduce){
+    .clock .colon{ animation:none; }
+  }
 
   .dock-wrap{
     position:relative; z-index:2;
@@ -157,6 +220,8 @@
     max-width: min(900px, 92vw);
     overflow-x: auto;
     scrollbar-width: none;
+    opacity:0;
+    animation: rise .8s ease forwards .5s;
   }
   .dock::-webkit-scrollbar{ display:none; }
   .tile{
@@ -169,6 +234,13 @@
     text-decoration:none;
     color: inherit;
     transition: transform .18s ease;
+    opacity:0;
+    animation: tileIn .5s ease forwards;
+    animation-delay: calc(var(--i, 0) * 45ms + .55s);
+  }
+  @keyframes tileIn{
+    from{ opacity:0; transform: translateY(8px) scale(.92); }
+    to{ opacity:1; transform: translateY(0) scale(1); }
   }
   .tile:hover{ transform: translateY(-4px); }
   .tile-icon{
@@ -177,9 +249,10 @@
     display:flex; align-items:center; justify-content:center;
     overflow:hidden;
     box-shadow: 0 6px 16px rgba(0,0,0,.25);
-    transition: transform .15s cubic-bezier(.2,.9,.3,1.2);
+    transition: transform .15s cubic-bezier(.2,.9,.3,1.2), box-shadow .2s ease;
     transform-origin: 50% 100%;
   }
+  .tile:hover .tile-icon{ box-shadow: 0 10px 22px rgba(0,0,0,.35); }
   .tile-icon img{ width:24px; height:24px; }
   .tile-icon.fallback{
     background: var(--tile-color, #6c6f7c);
@@ -193,7 +266,9 @@
     white-space:nowrap;
     overflow:hidden;
     text-overflow:ellipsis;
+    transition: color .2s ease;
   }
+  .tile:hover .tile-label{ color: var(--text); }
   .tile-remove{
     position:absolute; top:-6px; right:6px;
     width:18px; height:18px; border-radius:50%;
@@ -202,7 +277,9 @@
     display:none; align-items:center; justify-content:center;
     font-size:12px; line-height:1; cursor:pointer;
     box-shadow: 0 2px 6px rgba(0,0,0,.4);
+    transition: transform .15s ease;
   }
+  .tile-remove:hover{ transform: scale(1.12); }
   .tile:hover .tile-remove{ display:flex; }
 
   .add-tile .tile-icon{
@@ -211,6 +288,11 @@
     color: var(--text);
     font-size: 20px;
     box-shadow:none;
+    transition: transform .15s cubic-bezier(.2,.9,.3,1.2), border-color .2s ease, background .2s ease;
+  }
+  .add-tile:hover .tile-icon{
+    border-color: var(--accent);
+    background: rgba(242,200,121,.1);
   }
   .add-tile .tile-label{ color: var(--text-faint); }
 
@@ -223,10 +305,12 @@
     color: var(--text-dim);
     display:flex; align-items:center; justify-content:center;
     cursor:pointer;
-    transition: background .2s ease, transform .3s ease;
+    transition: background .2s ease, transform .3s ease, color .2s ease;
+    opacity:0;
+    animation: rise .8s ease forwards .3s;
   }
-  .settings-btn:hover{ background: var(--glass-bg-hover); color: var(--text); }
-  .settings-btn.open{ transform: rotate(60deg); }
+  .settings-btn:hover{ background: var(--glass-bg-hover); color: var(--text); transform: rotate(25deg); }
+  .settings-btn.open{ transform: rotate(75deg); }
 
   .panel{
     position:absolute; top:68px; right:20px; z-index:3;
@@ -237,11 +321,14 @@
     -webkit-backdrop-filter: blur(24px);
     border-radius: 16px;
     padding: 16px;
-    display:none;
+    display:flex;
     flex-direction:column; gap:12px;
     box-shadow: 0 12px 32px rgba(0,0,0,.4);
+    opacity:0; transform: translateY(-8px) scale(.98);
+    pointer-events:none;
+    transition: opacity .22s ease, transform .22s ease;
   }
-  .panel.open{ display:flex; }
+  .panel.open{ opacity:1; transform: translateY(0) scale(1); pointer-events:auto; }
   .panel-title{ font-size:13px; font-weight:600; color: var(--text); margin:0; }
   .panel label{
     font-size:12px; color: var(--text-dim);
@@ -257,19 +344,20 @@
     font-size: 13px;
     cursor:pointer;
     text-align:center;
-    transition: background .2s ease;
+    transition: background .2s ease, transform .15s ease;
   }
-  .file-btn:hover, .ghost-btn:hover{ background: var(--glass-bg-hover); }
+  .file-btn:hover, .ghost-btn:hover{ background: var(--glass-bg-hover); transform: translateY(-1px); }
   .ghost-btn.danger{ color: var(--danger); border-color: rgba(232,119,106,.4); }
   input[type=file]{ display:none; }
   .panel small{ color: var(--text-faint); font-size:11px; line-height:1.5; }
 
   .modal-backdrop{
     position:fixed; inset:0; z-index:10;
-    background: rgba(0,0,0,.45);
+    background: rgba(0,0,0,0);
     display:none; align-items:center; justify-content:center;
+    transition: background .25s ease;
   }
-  .modal-backdrop.open{ display:flex; }
+  .modal-backdrop.open{ display:flex; background: rgba(0,0,0,.45); }
   .modal{
     width: min(360px, 88vw);
     background: rgba(22,23,30,.85);
@@ -279,6 +367,13 @@
     border-radius: 18px;
     padding: 22px;
     display:flex; flex-direction:column; gap:14px;
+    transform: translateY(10px) scale(.97);
+    opacity:0;
+    transition: transform .25s cubic-bezier(.2,.9,.3,1.1), opacity .25s ease;
+  }
+  .modal-backdrop.open .modal{
+    transform: translateY(0) scale(1);
+    opacity:1;
   }
   .modal h3{
     margin:0; font-family:'Fraunces', serif; font-weight:400; font-size:19px;
@@ -293,8 +388,9 @@
     font-family:'Manrope', sans-serif;
     font-size: 14px;
     outline:none;
+    transition: border-color .2s ease, background .2s ease;
   }
-  .modal input:focus{ border-color: var(--accent); }
+  .modal input:focus{ border-color: var(--accent); background: rgba(255,255,255,.1); }
   .modal-actions{ display:flex; gap:10px; margin-top:4px; }
   .modal-actions button{ flex:1; }
   .primary-btn{
@@ -307,7 +403,9 @@
     font-weight:600;
     font-size: 13px;
     cursor:pointer;
+    transition: transform .15s ease, filter .15s ease;
   }
+  .primary-btn:hover{ transform: translateY(-1px); filter: brightness(1.06); }
   .error-text{ font-size:12px; color: var(--danger); display:none; }
   .hint{
     position:absolute; z-index:2; bottom: 5vh; left:50%; transform:translateX(-50%);
@@ -322,6 +420,7 @@
   <div class="bg-photo" id="bgPhoto"></div>
 </div>
 <div class="bg-overlay"></div>
+<div class="grain"></div>
 <div class="cursor-glow" id="cursorGlow"></div>
 
 <button class="settings-btn" id="settingsBtn" title="Pengaturan" aria-label="Pengaturan">
@@ -338,11 +437,13 @@
   <small>Foto disimpan otomatis dan tetap ada saat kamu membuka halaman ini lagi.</small>
 </div>
 
-<div class="stage">
+<div class="corner-info">
   <p class="greeting" id="greeting">Selamat datang</p>
   <h1 class="clock" id="clock">--:--</h1>
   <p class="date" id="dateLine"></p>
+</div>
 
+<div class="stage">
   <form class="search-form" id="searchForm">
     <div class="search-box">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><path d="m21 21-4.35-4.35"></path></svg>
@@ -455,9 +556,10 @@ function saveLinks(){
 function renderDock(){
   const dock = document.getElementById('dock');
   dock.innerHTML = '';
-  links.forEach(link=>{
+  links.forEach((link, i)=>{
     const a = document.createElement('a');
     a.className = 'tile';
+    a.style.setProperty('--i', i);
     a.href = link.url;
     a.target = '_self';
 
@@ -498,6 +600,7 @@ function renderDock(){
 
   const addTile = document.createElement('div');
   addTile.className = 'tile add-tile';
+  addTile.style.setProperty('--i', links.length);
   addTile.innerHTML = `
     <div class="tile-icon">+</div>
     <div class="tile-label">Tambah</div>
@@ -607,13 +710,18 @@ function saveBackground(dataUrl){
 }
 
 function applyBackground(dataUrl){
-  document.getElementById('bgPhoto').style.setProperty('--bg-image', `url(${dataUrl})`);
+  const photo = document.getElementById('bgPhoto');
+  photo.style.setProperty('--bg-image', `url(${dataUrl})`);
+  photo.classList.remove('fading-in');
+  void photo.offsetWidth;
+  photo.classList.add('fading-in');
   document.getElementById('hint').style.display = 'none';
 }
 
 document.getElementById('resetBgBtn').addEventListener('click', function(){
   idbDelete('bg').catch(function(){});
   document.getElementById('bgPhoto').style.removeProperty('--bg-image');
+  document.getElementById('bgPhoto').classList.remove('fading-in');
   document.getElementById('hint').style.display = 'block';
 });
 
@@ -633,7 +741,8 @@ function updateClock(){
   const now = new Date();
   const h = now.getHours();
   const m = String(now.getMinutes()).padStart(2, '0');
-  document.getElementById('clock').textContent = `${String(h).padStart(2,'0')}:${m}`;
+  document.getElementById('clock').innerHTML =
+    `${String(h).padStart(2,'0')}<span class="colon">:</span>${m}`;
 
   let greeting = 'Selamat malam';
   if(h < 11) greeting = 'Selamat pagi';
