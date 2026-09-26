@@ -129,9 +129,8 @@
         id="character-image"
         src="assets/default_character.png"
         alt="Wallpaper Background"
-        crossorigin="anonymous"
         class="w-full h-full object-cover object-center select-none transition-all duration-300"
-        onerror="this.src='assets/default_character.png'"
+        onerror="this.onerror=null; this.src='assets/default_character.png';"
       />
     </div>
   </div>
@@ -280,24 +279,33 @@
       <div>
         <div class="flex items-center justify-between pb-5 border-b border-white/10">
           <div>
-            <h2 class="text-lg font-bold tracking-tight">Kustomisasi Karakter & Parallax</h2>
-            <p class="text-xs text-white/60">Gunakan file PNG transparan untuk efek wallpaper layering</p>
+            <h2 class="text-lg font-bold tracking-tight">Kustomisasi Wallpaper & Parallax</h2>
+            <p class="text-xs text-white/60">Tersimpan otomatis khusus untuk perangkat ini</p>
           </div>
           <button onclick="toggleCustomizerModal()" class="p-2 rounded-full hover:bg-white/10 text-white/60 hover:text-white transition-colors">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
           </button>
         </div>
 
-        <!-- 1. Upload Local PNG File -->
-        <div class="mt-6">
-          <label class="text-xs uppercase font-bold tracking-wider text-accent block mb-2">1. Upload File PNG (Transparan)</label>
+        <!-- Status Penyimpanan Perangkat -->
+        <div class="mt-4 p-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-between text-xs">
+          <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span class="text-white/90 font-medium">Penyimpanan Perangkat:</span>
+          </div>
+          <span id="storage-status-badge" class="font-mono text-[10px] text-emerald-300 font-semibold bg-emerald-500/20 px-2 py-0.5 rounded-full border border-emerald-500/30">Memori Lokal Aktif</span>
+        </div>
+
+        <!-- 1. Upload Local Wallpaper / Character -->
+        <div class="mt-5">
+          <label class="text-xs uppercase font-bold tracking-wider text-accent block mb-2">1. Upload Wallpaper / Gambar</label>
           <div class="border-2 border-dashed border-white/20 hover:border-accent rounded-2xl p-5 text-center bg-white/5 hover:bg-white/10 transition-all cursor-pointer relative group">
-            <input type="file" id="local-file-input" accept="image/png,image/webp" onchange="handleLocalFileUpload(event)" class="absolute inset-0 opacity-0 cursor-pointer w-full h-full" />
+            <input type="file" id="local-file-input" accept="image/*" onchange="handleLocalFileUpload(event)" class="absolute inset-0 opacity-0 cursor-pointer w-full h-full" />
             <svg class="w-8 h-8 text-white/50 group-hover:text-accent mx-auto mb-2 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
             </svg>
-            <div class="text-xs font-semibold text-white">Pilih file PNG dari komputer</div>
-            <div class="text-[10px] text-white/50 mt-1">PNG transparan tanpa background (Layer 2)</div>
+            <div class="text-xs font-semibold text-white">Pilih wallpaper dari perangkat Anda</div>
+            <div class="text-[10px] text-white/50 mt-1">Mendukung PNG, JPG, WEBP &bull; Disimpan di memori perangkat</div>
           </div>
         </div>
 
@@ -436,6 +444,23 @@
             class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-2.5 text-xs text-white outline-none focus:border-accent"
           />
         </div>
+
+        <!-- 8. Cadangkan & Pindahkan Antar Perangkat -->
+        <div class="mt-6 p-4 rounded-2xl bg-white/5 border border-white/10">
+          <label class="text-xs uppercase font-bold tracking-wider text-accent block mb-1">8. Sinkronisasi Antar Perangkat</label>
+          <p class="text-[10px] text-white/50 mb-3">Cadangkan wallpaper dan konfigurasi ini untuk digunakan di laptop, HP, atau browser lain.</p>
+          <div class="grid grid-cols-2 gap-2">
+            <button type="button" onclick="exportConfig()" class="py-2.5 px-3 rounded-xl bg-white/10 hover:bg-white/20 border border-white/10 text-white font-semibold text-xs flex items-center justify-center gap-1.5 transition-all">
+              <svg class="w-3.5 h-3.5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+              <span>Ekspor (JSON)</span>
+            </button>
+            <label class="py-2.5 px-3 rounded-xl bg-white/10 hover:bg-white/20 border border-white/10 text-white font-semibold text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer text-center">
+              <input type="file" id="import-config-input" accept=".json" onchange="importConfig(event)" class="hidden" />
+              <svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+              <span>Impor (JSON)</span>
+            </label>
+          </div>
+        </div>
       </div>
 
       <!-- Footer Reset / Save -->
@@ -500,32 +525,187 @@
     let currentY = 0;
     let isParallaxActive = true;
 
-    window.addEventListener('DOMContentLoaded', () => {
-      // 1. Restore Custom Character
-      const savedCharacter = localStorage.getItem('aurora_character');
+    // ==========================================
+    // IndexedDB Storage Engine (AuroraDB)
+    // Menyimpan wallpaper berukuran besar secara persisten per perangkat
+    // ==========================================
+    const AuroraDB = {
+      dbName: 'AuroraStartpageDB',
+      storeName: 'app_media',
+      version: 1,
+      _db: null,
+
+      async open() {
+        if (this._db) return this._db;
+        return new Promise((resolve) => {
+          if (!window.indexedDB) {
+            console.warn('IndexedDB tidak didukung oleh peramban ini');
+            resolve(null);
+            return;
+          }
+          const req = indexedDB.open(this.dbName, this.version);
+          req.onupgradeneeded = (e) => {
+            const db = e.target.result;
+            if (!db.objectStoreNames.contains(this.storeName)) {
+              db.createObjectStore(this.storeName);
+            }
+          };
+          req.onsuccess = (e) => {
+            this._db = e.target.result;
+            resolve(this._db);
+          };
+          req.onerror = (e) => {
+            console.warn('Gagal membuka IndexedDB:', e);
+            resolve(null);
+          };
+        });
+      },
+
+      async set(key, value) {
+        const db = await this.open();
+        if (!db) return false;
+        return new Promise((resolve) => {
+          try {
+            const tx = db.transaction(this.storeName, 'readwrite');
+            const store = tx.objectStore(this.storeName);
+            const req = store.put(value, key);
+            req.onsuccess = () => resolve(true);
+            req.onerror = () => resolve(false);
+          } catch (e) {
+            resolve(false);
+          }
+        });
+      },
+
+      async get(key) {
+        const db = await this.open();
+        if (!db) return null;
+        return new Promise((resolve) => {
+          try {
+            const tx = db.transaction(this.storeName, 'readonly');
+            const store = tx.objectStore(this.storeName);
+            const req = store.get(key);
+            req.onsuccess = () => resolve(req.result || null);
+            req.onerror = () => resolve(null);
+          } catch (e) {
+            resolve(null);
+          }
+        });
+      },
+
+      async delete(key) {
+        const db = await this.open();
+        if (!db) return false;
+        return new Promise((resolve) => {
+          try {
+            const tx = db.transaction(this.storeName, 'readwrite');
+            const store = tx.objectStore(this.storeName);
+            const req = store.delete(key);
+            req.onsuccess = () => resolve(true);
+            req.onerror = () => resolve(false);
+          } catch (e) {
+            resolve(false);
+          }
+        });
+      },
+
+      async clear() {
+        const db = await this.open();
+        if (!db) return false;
+        return new Promise((resolve) => {
+          try {
+            const tx = db.transaction(this.storeName, 'readwrite');
+            const store = tx.objectStore(this.storeName);
+            const req = store.clear();
+            req.onsuccess = () => resolve(true);
+            req.onerror = () => resolve(false);
+          } catch (e) {
+            resolve(false);
+          }
+        });
+      }
+    };
+
+    // Fungsi memuat wallpaper tersimpan untuk perangkat ini
+    async function restoreWallpaper() {
       const charImg = document.getElementById('character-image');
-      if (savedCharacter) {
-        charImg.src = savedCharacter;
+      const source = localStorage.getItem('aurora_character_source');
+
+      try {
+        if (source === 'indexeddb') {
+          const record = await AuroraDB.get('aurora_wallpaper_blob');
+          if (record && record.dataUrl) {
+            charImg.src = record.dataUrl;
+            return;
+          }
+        } else if (source === 'preset') {
+          const presetKey = localStorage.getItem('aurora_preset_key');
+          if (presetKey && presetCharacters[presetKey]) {
+            charImg.src = presetCharacters[presetKey].url;
+            return;
+          }
+        } else if (source === 'url') {
+          const customUrl = localStorage.getItem('aurora_custom_url');
+          if (customUrl) {
+            charImg.src = customUrl;
+            return;
+          }
+        }
+
+        // Fallback kompatibilitas data lama di localStorage
+        const legacySaved = localStorage.getItem('aurora_character');
+        if (legacySaved) {
+          charImg.src = legacySaved;
+          // Migrasikan ke IndexedDB secara otomatis
+          await AuroraDB.set('aurora_wallpaper_blob', {
+            dataUrl: legacySaved,
+            name: 'migrated_wallpaper',
+            updatedAt: Date.now()
+          });
+          localStorage.setItem('aurora_character_source', 'indexeddb');
+          return;
+        }
+      } catch (err) {
+        console.warn('Gagal memuat wallpaper tersimpan:', err);
       }
 
-      // 2. Restore User Name
+      // Default bawaan
+      charImg.src = presetCharacters.default.url;
+    }
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      // 1. Pulihkan Wallpaper dari Penyimpanan Perangkat
+      await restoreWallpaper();
+
+      // Perbarui status badge penyimpanan
+      const badge = document.getElementById('storage-status-badge');
+      if (badge) {
+        badge.textContent = window.indexedDB ? 'IndexedDB Aktif' : 'LocalStorage Aktif';
+      }
+
+      // 2. Pulihkan Nama Pengguna
       const savedName = localStorage.getItem('aurora_username');
       if (savedName) {
         userName = savedName;
-        document.getElementById('user-name-input').value = savedName;
+        const nameInput = document.getElementById('user-name-input');
+        if (nameInput) nameInput.value = savedName;
       }
 
-      // 3. Restore Fog Slider (Default 100 = No cutoff / seamless full screen)
+      // 3. Pulihkan Mesin Pencari
+      const savedEngine = localStorage.getItem('aurora_search_engine') || 'google';
+      setEngine(savedEngine, false);
+
+      // 4. Pulihkan Slider Fog
       const savedFog = localStorage.getItem('aurora_fog') || '100';
       updateFogPosition(savedFog, false);
       const fogSlider = document.getElementById('fog-slider');
       if (fogSlider) fogSlider.value = savedFog;
 
-      // 4. Restore Fit Mode (Default cover = Full Screen Edge-to-Edge)
+      // 5. Pulihkan Mode Skala (Default: Cover / Full Layar)
       const savedFit = localStorage.getItem('aurora_fit_mode') || 'cover';
       setImageFitMode(savedFit, false);
 
-      // 5. Restore or Initialize Theme Palette
+      // 6. Pulihkan Tema Warna
       updateAutoSyncUI();
       const savedTheme = localStorage.getItem('aurora_theme_primary');
       if (savedTheme) {
@@ -538,23 +718,24 @@
         applyDynamicPalette(presetCharacters.default.fallbackColor, false);
       }
 
-      // 6. Hook Character Image Load Event for Automatic Color Extraction
+      // 7. Sinkronisasi Warna Otomatis saat Wallpaper Selesai Dimuat
+      const charImg = document.getElementById('character-image');
       charImg.addEventListener('load', () => {
         if (isAutoColorSync) {
           extractThemeFromImage(charImg);
         }
       });
 
-      // If already loaded from cache
+      // Jika gambar sudah di-cache oleh browser
       if (charImg.complete && isAutoColorSync) {
         setTimeout(() => extractThemeFromImage(charImg), 100);
       }
 
-      // Start Clock & Dynamic Greeting
+      // Jalankan Jam & Ucapan Sapaan
       updateClockAndGreeting();
       setInterval(updateClockAndGreeting, 1000);
 
-      // Support URL params for quick testing & direct links
+      // Dukungan Parameter URL untuk Testing
       const urlParams = new URLSearchParams(window.location.search);
       if (urlParams.get('modal') === '1') {
         toggleCustomizerModal();
@@ -569,7 +750,7 @@
         setImageFitMode(urlParams.get('fit'));
       }
 
-      // Start Parallax Animation Loop
+      // Jalankan Animasi Parallax
       requestAnimationFrame(renderParallax);
     });
 
@@ -818,7 +999,7 @@
     }
 
     // Search Engine Handling
-    function setEngine(engineKey) {
+    function setEngine(engineKey, save = true) {
       activeEngine = engineKey;
       ['google', 'duckduckgo', 'youtube', 'github'].forEach(k => {
         const btn = document.getElementById(`engine-${k}`);
@@ -830,7 +1011,10 @@
           }
         }
       });
-      showToast(`Mesin pencari: ${engines[engineKey].name}`);
+      if (save) {
+        localStorage.setItem('aurora_search_engine', engineKey);
+        showToast(`Mesin pencari: ${engines[engineKey].name}`);
+      }
     }
 
     function handleSearch(e) {
@@ -875,38 +1059,66 @@
       }
     }
 
-    // 1. Handle Local File Upload (PNG FileReader)
-    function handleLocalFileUpload(event) {
+    // 1. Handle Local File Upload (PNG/JPG/WEBP dengan IndexedDB storage)
+    async function handleLocalFileUpload(event) {
       const file = event.target.files[0];
       if (!file) return;
 
-      if (!file.type.includes('png') && !file.type.includes('webp')) {
-        showToast('Harap pilih file PNG transparan!');
+      if (!file.type.startsWith('image/')) {
+        showToast('Harap pilih file gambar (PNG, JPG, WEBP, dll.)');
         return;
       }
 
+      showToast('Menyimpan wallpaper ke memori perangkat...');
+
       const reader = new FileReader();
-      reader.onload = function(e) {
+      reader.onload = async function(e) {
         const dataUrl = e.target.result;
         const charImg = document.getElementById('character-image');
         charImg.src = dataUrl;
+
+        // Simpan ke IndexedDB (Mendukung file resolusi tinggi tanpa batasan 5MB kuota)
+        await AuroraDB.set('aurora_wallpaper_blob', {
+          dataUrl: dataUrl,
+          name: file.name,
+          type: file.type,
+          updatedAt: Date.now()
+        });
+
+        localStorage.setItem('aurora_character_source', 'indexeddb');
+        localStorage.removeItem('aurora_preset_key');
+        localStorage.removeItem('aurora_custom_url');
+
+        // Fallback opsional jika ukuran di bawah 1.5MB
         try {
-          localStorage.setItem('aurora_character', dataUrl);
-          showToast('Karakter PNG & warna latar berhasil diterapkan!');
-        } catch (err) {
-          showToast('Karakter diterapkan (Ukuran besar)');
+          if (dataUrl.length < 1500000) {
+            localStorage.setItem('aurora_character', dataUrl);
+          } else {
+            localStorage.removeItem('aurora_character');
+          }
+        } catch (_) {}
+
+        if (isAutoColorSync) {
+          setTimeout(() => extractThemeFromImage(charImg), 100);
         }
+
+        showToast('Wallpaper tersimpan di perangkat ini!');
       };
       reader.readAsDataURL(file);
     }
 
     // 2. Preset Characters
-    function setPresetCharacter(key) {
+    async function setPresetCharacter(key) {
       const preset = presetCharacters[key];
       if (preset) {
         const charImg = document.getElementById('character-image');
         charImg.src = preset.url;
-        localStorage.setItem('aurora_character', preset.url);
+        localStorage.setItem('aurora_character_source', 'preset');
+        localStorage.setItem('aurora_preset_key', key);
+        localStorage.removeItem('aurora_custom_url');
+        localStorage.removeItem('aurora_character');
+        await AuroraDB.delete('aurora_wallpaper_blob');
+
         if (isAutoColorSync) {
           applyDynamicPalette(preset.fallbackColor);
         }
@@ -914,15 +1126,20 @@
       }
     }
 
-    // 3. Custom PNG URL
-    function applyCustomUrl() {
+    // 3. Custom PNG/Image URL
+    async function applyCustomUrl() {
       const input = document.getElementById('custom-png-url');
       const url = input.value.trim();
       if (url) {
         const charImg = document.getElementById('character-image');
         charImg.src = url;
-        localStorage.setItem('aurora_character', url);
-        showToast('URL gambar karakter diterapkan!');
+        localStorage.setItem('aurora_character_source', 'url');
+        localStorage.setItem('aurora_custom_url', url);
+        localStorage.removeItem('aurora_preset_key');
+        localStorage.removeItem('aurora_character');
+        await AuroraDB.delete('aurora_wallpaper_blob');
+
+        showToast('URL wallpaper diterapkan & disimpan!');
         input.value = '';
       }
     }
@@ -978,28 +1195,139 @@
       updateClockAndGreeting();
     }
 
+    // 6. Cadangkan Konfigurasi (Ekspor ke file JSON)
+    async function exportConfig() {
+      showToast('Menyiapkan file cadangan...');
+      let wallpaperData = null;
+      const source = localStorage.getItem('aurora_character_source') || 'default';
+      if (source === 'indexeddb') {
+        const record = await AuroraDB.get('aurora_wallpaper_blob');
+        if (record) wallpaperData = record.dataUrl;
+      }
+
+      const config = {
+        app: 'AuroraStartpage',
+        version: 1,
+        source: source,
+        presetKey: localStorage.getItem('aurora_preset_key'),
+        customUrl: localStorage.getItem('aurora_custom_url'),
+        wallpaperData: wallpaperData,
+        username: userName,
+        fog: localStorage.getItem('aurora_fog') || '100',
+        fitMode: currentFitMode,
+        autoColor: isAutoColorSync,
+        themePrimary: currentPrimaryRGB,
+        searchEngine: activeEngine,
+        exportedAt: new Date().toISOString()
+      };
+
+      const blob = new Blob([JSON.stringify(config, null, 2)], { type: 'application/json' });
+      const blobUrl = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = blobUrl;
+      a.download = `startpage-config-${userName.toLowerCase()}-${new Date().toISOString().slice(0, 10)}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(blobUrl);
+      showToast('Konfigurasi perangkat berhasil diekspor!');
+    }
+
+    // 7. Pulihkan Konfigurasi dari File JSON (Impor)
+    async function importConfig(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      try {
+        const text = await file.text();
+        const config = JSON.parse(text);
+
+        if (config.username) {
+          updateUserName(config.username);
+          const nameInput = document.getElementById('user-name-input');
+          if (nameInput) nameInput.value = config.username;
+        }
+
+        if (config.fog !== undefined) {
+          updateFogPosition(config.fog, true);
+          const fogSlider = document.getElementById('fog-slider');
+          if (fogSlider) fogSlider.value = config.fog;
+        }
+
+        if (config.fitMode) {
+          setImageFitMode(config.fitMode, true);
+        }
+
+        if (config.searchEngine) {
+          setEngine(config.searchEngine, true);
+        }
+
+        if (config.autoColor !== undefined) {
+          isAutoColorSync = config.autoColor;
+          localStorage.setItem('aurora_auto_color', isAutoColorSync);
+          updateAutoSyncUI();
+        }
+
+        if (config.themePrimary) {
+          applyDynamicPalette(config.themePrimary, true);
+        }
+
+        if (config.source === 'indexeddb' && config.wallpaperData) {
+          await AuroraDB.set('aurora_wallpaper_blob', {
+            dataUrl: config.wallpaperData,
+            name: 'imported_wallpaper',
+            updatedAt: Date.now()
+          });
+          localStorage.setItem('aurora_character_source', 'indexeddb');
+          localStorage.removeItem('aurora_preset_key');
+          localStorage.removeItem('aurora_custom_url');
+          document.getElementById('character-image').src = config.wallpaperData;
+        } else if (config.source === 'preset' && config.presetKey) {
+          await setPresetCharacter(config.presetKey);
+        } else if (config.source === 'url' && config.customUrl) {
+          document.getElementById('custom-png-url').value = config.customUrl;
+          await applyCustomUrl();
+        }
+
+        showToast('Konfigurasi perangkat berhasil diimpor!');
+      } catch (err) {
+        console.error('Gagal mengimpor file:', err);
+        showToast('Format file konfigurasi tidak valid!');
+      }
+      event.target.value = '';
+    }
+
     // Reset Defaults
-    function resetDefaults() {
+    async function resetDefaults() {
       localStorage.removeItem('aurora_character');
+      localStorage.removeItem('aurora_character_source');
+      localStorage.removeItem('aurora_preset_key');
+      localStorage.removeItem('aurora_custom_url');
       localStorage.removeItem('aurora_username');
       localStorage.removeItem('aurora_fog');
       localStorage.removeItem('aurora_fit_mode');
       localStorage.removeItem('aurora_auto_color');
       localStorage.removeItem('aurora_theme_primary');
+      localStorage.removeItem('aurora_search_engine');
+
+      await AuroraDB.clear();
 
       const charImg = document.getElementById('character-image');
       charImg.src = presetCharacters.default.url;
       userName = 'Bagus';
-      document.getElementById('user-name-input').value = 'Bagus';
+      const nameInput = document.getElementById('user-name-input');
+      if (nameInput) nameInput.value = 'Bagus';
       updateFogPosition(100, false);
-      document.getElementById('fog-slider').value = 100;
+      const fogSlider = document.getElementById('fog-slider');
+      if (fogSlider) fogSlider.value = 100;
       setImageFitMode('cover', false);
+      setEngine('google', false);
 
       isAutoColorSync = true;
       updateAutoSyncUI();
       applyDynamicPalette(presetCharacters.default.fallbackColor, false);
       updateClockAndGreeting();
-      showToast('Pengaturan direset ke default');
+      showToast('Semua pengaturan direset ke awal');
     }
 
     // Helper: Toast
