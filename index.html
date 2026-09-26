@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Startpage &bull; Bagus</title>
+
+  <!-- Google Fonts: Montserrat & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Montserrat', 'Inter', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              magenta: '#d946ef',
+              darkPurple: '#2e0238',
+              deepNight: '#0c0111',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    :root {
+      --accent-color: #d946ef;
+      --accent-rgb: 217, 70, 239;
+    }
+
+    #page-body {
+      transition: background 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    #radial-overlay {
+      transition: background 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .text-accent {
+      color: var(--accent-color, #d946ef);
+      transition: color 0.8s ease;
+    }
+
+    .border-accent {
+      border-color: rgba(var(--accent-rgb, 217, 70, 239), 0.35);
+      transition: border-color 0.8s ease;
+    }
+
+    .bg-accent-subtle {
+      background-color: rgba(var(--accent-rgb, 217, 70, 239), 0.16);
+      transition: background-color 0.8s ease;
+    }
+
+    .decoration-accent {
+      text-decoration-color: var(--accent-color, #d946ef);
+    }
+
+    /* Ambient radial glow blending dynamic background */
+    .radial-bg {
+      background: radial-gradient(circle at 50% 42%, rgba(var(--accent-rgb, 217, 70, 239), 0.38) 0%, rgba(112, 26, 117, 0.25) 45%, rgba(12, 1, 17, 0) 80%);
+    }
+
+    /* CRITICAL FOG EFFECT: Custom CSS mask fading out bottom of character into background */
+    .character-fog-mask {
+      mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 65%, rgba(0, 0, 0, 0) 100%);
+      -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 65%, rgba(0, 0, 0, 0) 100%);
+    }
+
+    /* Custom subtle scrollbar */
+    .custom-scroll::-webkit-scrollbar {
+      width: 5px;
+    }
+    .custom-scroll::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 9999px;
+    }
+  </style>
+</head>
+
+<!-- 1. Global Theme & Background: Vibrant radial gradient blending deep magenta and dark purple, overflow hidden, h-screen w-screen -->
+<body id="page-body" class="h-screen w-screen overflow-hidden bg-gradient-to-br from-pink-800 via-purple-900 to-black text-white font-sans relative">
+
+  <!-- ==========================================
+       LAYER 1: Background Atmosphere & Ambient Dust
+       ========================================== -->
+  <div id="radial-overlay" class="absolute inset-0 radial-bg pointer-events-none z-0"></div>
+
+  <!-- Ambient light particle effects -->
+  <div id="ambient-particles" class="absolute inset-0 pointer-events-none z-0 opacity-40 overflow-hidden">
+    <div class="absolute w-2 h-2 rounded-full bg-pink-400 blur-[1px] top-1/4 left-1/5 animate-pulse"></div>
+    <div class="absolute w-1.5 h-1.5 rounded-full bg-fuchsia-300 blur-[1px] top-1/3 right-1/4 animate-pulse" style="animation-delay: 1.5s;"></div>
+    <div class="absolute w-2.5 h-2.5 rounded-full bg-purple-300 blur-[2px] bottom-1/4 left-1/3 animate-pulse" style="animation-delay: 2.2s;"></div>
+    <div class="absolute w-1 h-1 rounded-full bg-white blur-[0.5px] top-2/3 right-1/5 animate-pulse" style="animation-delay: 0.8s;"></div>
+  </div>
+
+  <!-- ==========================================
+       LAYER 2: Full Screen Wallpaper & Parallax Layer
+       (Full viewport coverage, zero color cuts, seamless edge-to-edge)
+       ========================================== -->
+  <div class="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+    <div id="parallax-container" class="absolute -inset-8 w-[calc(100%+4rem)] h-[calc(100%+4rem)] flex items-center justify-center transition-transform duration-150 ease-out">
+      <img
+        id="character-image"
+        src="assets/default_character.png"
+        alt="Wallpaper Background"
+        crossorigin="anonymous"
+        class="w-full h-full object-cover object-center select-none transition-all duration-300"
+        onerror="this.src='assets/default_character.png'"
+      />
+    </div>
+  </div>
+
+  <!-- Ambient Readability Scrims (Soft gentle gradient so clock, shortcuts, and search are always legible on any wallpaper) -->
+  <div class="absolute inset-x-0 top-0 h-36 bg-gradient-to-b from-black/60 via-black/20 to-transparent pointer-events-none z-10"></div>
+  <div class="absolute inset-x-0 bottom-0 h-52 bg-gradient-to-t from-black/70 via-black/25 to-transparent pointer-events-none z-10"></div>
+
+  <!-- ==========================================
+       LAYER 3: TOP BAR (Left: Jam | Right: Shortcuts)
+       ========================================== -->
+  <header class="fixed top-6 left-8 right-8 z-20 flex items-start justify-between pointer-events-none">
+    
+    <!-- TOP LEFT: Jam & Tanggal -->
+    <div class="bg-black/35 hover:bg-black/45 backdrop-blur-md px-5 py-3.5 rounded-2xl border border-white/10 shadow-xl shadow-black/30 pointer-events-auto transition-all duration-300 group">
+      <div class="flex items-baseline gap-2.5">
+        <span id="clock-time" class="text-3xl lg:text-4xl font-extralight tracking-tight text-white font-mono drop-shadow-sm">
+          18:55
+        </span>
+        <span id="clock-seconds" class="text-[11px] font-mono text-accent font-semibold px-2 py-0.5 rounded-md bg-accent-subtle border border-accent">
+          00
+        </span>
+      </div>
+      <div class="flex items-center gap-2 mt-1">
+        <span id="clock-date" class="text-xs text-white/70 font-medium tracking-wide">
+          Saturday, 26 September 2026
+        </span>
+        <span class="w-1 h-1 rounded-full bg-white/30"></span>
+        <span class="text-[10px] text-emerald-400 font-mono flex items-center gap-1">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+          GMT+7
+        </span>
+      </div>
+    </div>
+
+    <!-- TOP RIGHT: Shortcuts / Quick Sites with Official Brand Icons -->
+    <nav class="bg-black/35 hover:bg-black/45 backdrop-blur-md p-1.5 rounded-2xl border border-white/10 shadow-xl shadow-black/30 pointer-events-auto flex items-center gap-1.5 transition-all duration-300">
+      <!-- ChatGPT -->
+      <a href="https://chatgpt.com" target="_blank" class="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/5 hover:bg-white/15 border border-white/5 hover:border-white/20 transition-all group" title="ChatGPT &bull; AI Assistant">
+        <svg class="w-4 h-4 text-emerald-400 shrink-0 group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M22.2819 9.8211a5.9847 5.9847 0 0 0-.5157-4.9108 6.0462 6.0462 0 0 0-6.5098-2.9A6.0651 6.0651 0 0 0 4.9807 4.1818a5.9847 5.9847 0 0 0-3.9977 2.9 6.0462 6.0462 0 0 0 .7427 7.0966 5.98 5.98 0 0 0 .511 4.9107 6.051 6.051 0 0 0 6.5146 2.9001A5.9847 5.9847 0 0 0 13.2599 24a6.0557 6.0557 0 0 0 5.7718-4.2058 5.9894 5.9894 0 0 0 3.9977-2.9001 6.0557 6.0557 0 0 0-.7475-7.0729zm-9.022 12.6081a4.4755 4.4755 0 0 1-2.8764-1.0408l.1419-.0804 4.7783-2.7582a.7948.7948 0 0 0 .3927-.6813v-6.7369l2.02 1.1686a.071.071 0 0 1 .038.052v5.5826a4.504 4.504 0 0 1-4.4945 4.4944zm-9.6607-4.1254a4.4708 4.4708 0 0 1-.5346-3.0137l.142.0852 4.783 2.7582a.7712.7712 0 0 0 .7806 0l5.8428-3.3685v2.3324a.0804.0804 0 0 1-.0332.0615L9.74 19.9502a4.4992 4.4992 0 0 1-6.1408-1.6464zM2.3408 7.8956a4.485 4.485 0 0 1 2.3655-1.9728V11.6a.7664.7664 0 0 0 .3879.6765l5.8144 3.3543-2.0201 1.1685a.0757.0757 0 0 1-.071 0l-4.8303-2.7865A4.504 4.504 0 0 1 2.3408 7.872zm16.5963 3.8558L13.1038 8.364 15.1192 7.2a.0757.0757 0 0 1 .071 0l4.8303 2.7913a4.4944 4.4944 0 0 1-.6765 8.1042v-5.6772a.79.79 0 0 0-.407-.6669zm2.0107-3.0231l-.142-.0852-4.7735-2.7818a.7759.7759 0 0 0-.7854 0L9.409 9.2297V6.8974a.0662.0662 0 0 1 .0284-.0615l4.8303-2.7866a4.4992 4.4992 0 0 1 6.6802 4.66zM8.3065 12.863l-2.02-1.1638a.0804.0804 0 0 1-.038-.0567V6.0742a4.4992 4.4992 0 0 1 7.3757-3.4537l-.142.0805L8.704 5.459a.7948.7948 0 0 0-.3927.6813zm1.0976-2.3654l2.602-1.4998 2.6069 1.4998v2.9994l-2.6069 1.4997-2.602-1.4997z"/>
+        </svg>
+        <span class="text-xs font-semibold text-white/90 group-hover:text-white">ChatGPT</span>
+      </a>
+
+      <!-- YouTube -->
+      <a href="https://youtube.com" target="_blank" class="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/5 hover:bg-white/15 border border-white/5 hover:border-white/20 transition-all group" title="YouTube &bull; Media">
+        <svg class="w-4 h-4 text-red-500 shrink-0 group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+        </svg>
+        <span class="text-xs font-semibold text-white/90 group-hover:text-white">YouTube</span>
+      </a>
+
+      <!-- GitHub -->
+      <a href="https://github.com" target="_blank" class="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/5 hover:bg-white/15 border border-white/5 hover:border-white/20 transition-all group" title="GitHub &bull; Repositories">
+        <svg class="w-4 h-4 text-white/90 shrink-0 group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="currentColor">
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
+        </svg>
+        <span class="text-xs font-semibold text-white/90 group-hover:text-white">GitHub</span>
+      </a>
+
+      <!-- Reddit -->
+      <a href="https://reddit.com" target="_blank" class="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/5 hover:bg-white/15 border border-white/5 hover:border-white/20 transition-all group" title="Reddit &bull; Community">
+        <svg class="w-4 h-4 text-[#ff4500] shrink-0 group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 0 1 .042.52c0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 0 1 4.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 0 1 .14-.197.35.35 0 0 1 .238-.042l2.906.617a1.214 1.214 0 0 1 1.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687 0 1.248-.561 1.248-1.249 0-.688-.561-1.249-1.249-1.249zm5.5 0c-.687 0-1.248.561-1.248 1.25 0 .687.561 1.248 1.249 1.248.688 0 1.249-.561 1.249-1.249 0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327 0 0 0-.231.094.33.33 0 0 0 0 .463c.842.842 2.484.913 2.961.913.477 0 2.105-.056 2.961-.913a.361.361 0 0 0 .029-.463.33.33 0 0 0-.464 0c-.547.533-1.684.73-2.512.73-.828 0-1.979-.197-2.512-.73a.326.326 0 0 0-.232-.095z"/>
+        </svg>
+        <span class="text-xs font-semibold text-white/90 group-hover:text-white">Reddit</span>
+      </a>
+
+      <!-- Tailwind CSS -->
+      <a href="https://tailwindcss.com/docs" target="_blank" class="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/5 hover:bg-white/15 border border-white/5 hover:border-white/20 transition-all group" title="Tailwind &bull; Docs">
+        <svg class="w-4 h-4 text-[#38bdf8] shrink-0 group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12.001 4.8c-3.2 0-5.2 1.6-6 4.8 1.2-1.6 2.6-2.2 4.2-1.8.913.228 1.565.89 2.288 1.624C13.666 10.618 15.027 12 18.001 12c3.2 0 5.2-1.6 6-4.8-1.2 1.6-2.6 2.2-4.2 1.8-.913-.228-1.565-.89-2.288-1.624C16.337 6.182 14.976 4.8 12.001 4.8zm-6 7.2c-3.2 0-5.2 1.6-6 4.8 1.2-1.6 2.6-2.2 4.2-1.8.913.228 1.565.89 2.288 1.624 1.177 1.194 2.538 2.576 5.512 2.576 3.2 0 5.2-1.6 6-4.8-1.2 1.6-2.6 2.2-4.2 1.8-.913-.228-1.565-.89-2.288-1.624C10.337 13.382 8.976 12 6.001 12z"/>
+        </svg>
+        <span class="text-xs font-semibold text-white/90 group-hover:text-white">Tailwind</span>
+      </a>
+    </nav>
+  </header>
+
+  <!-- ==========================================
+       LAYER 4: BOTTOM CENTER (Search Bar & Dynamic Greeting)
+       ========================================== -->
+  <footer class="fixed bottom-8 left-1/2 -translate-x-1/2 z-20 w-full max-w-[30rem] px-4 pointer-events-auto text-center flex flex-col items-center">
+    
+    <!-- Welcome Text: Sleek greeting in white thin font -->
+    <h1 id="welcome-greeting" class="text-xl lg:text-2xl font-light text-white tracking-wide drop-shadow-md mb-3 select-none">
+      Good Evening, <span class="font-normal text-accent">Bagus</span>.
+    </h1>
+
+    <!-- Clean Minimalist Search Bar -->
+    <form onsubmit="handleSearch(event)" class="w-full relative">
+      <div class="w-full bg-black/40 hover:bg-black/50 focus-within:bg-black/60 backdrop-blur-md rounded-full px-5 py-3.5 border border-white/20 focus-within:border-white/40 shadow-2xl flex items-center gap-3 transition-all duration-200">
+        <!-- Search icon -->
+        <svg class="w-4 h-4 text-white/60 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+        </svg>
+
+        <!-- Search Input Field -->
+        <input
+          id="center-search-input"
+          type="text"
+          placeholder="Search or type a URL... (Press '/' to focus)"
+          autocomplete="off"
+          class="w-full bg-transparent text-white placeholder-white/50 text-sm outline-none font-medium"
+        />
+
+        <!-- Search Action Button -->
+        <button type="submit" class="p-1 rounded-full text-white/60 hover:text-white transition-colors" title="Search">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Clean Minimalist Engine Links -->
+      <div class="flex items-center justify-center gap-3 mt-2.5 text-[10px] text-white/60 font-medium">
+        <button type="button" onclick="setEngine('google')" id="engine-google" class="text-white font-semibold underline underline-offset-4 decoration-accent transition-colors">Google</button>
+        <span>&bull;</span>
+        <button type="button" onclick="setEngine('duckduckgo')" id="engine-duckduckgo" class="hover:text-white transition-colors">DuckDuckGo</button>
+        <span>&bull;</span>
+        <button type="button" onclick="setEngine('youtube')" id="engine-youtube" class="hover:text-white transition-colors">YouTube</button>
+        <span>&bull;</span>
+        <button type="button" onclick="setEngine('github')" id="engine-github" class="hover:text-white transition-colors">GitHub</button>
+      </div>
+    </form>
+  </footer>
+
+  <!-- Fixed bottom elements -->
+  <span class="fixed bottom-6 left-8 z-20 font-mono text-[10px] tracking-wider uppercase text-white/30 pointer-events-none select-none">
+    Aurora Parallax Startpage
+  </span>
+
+  <!-- Floating button to change character & wallpaper -->
+  <button onclick="toggleCustomizerModal()" class="fixed bottom-6 right-8 z-30 px-4 py-2 rounded-full bg-black/40 hover:bg-black/60 border border-white/15 text-white text-xs font-semibold backdrop-blur-md shadow-lg flex items-center gap-2 transition-all active:scale-95 cursor-pointer">
+    <svg class="w-3.5 h-3.5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+    </svg>
+    <span>Ubah Wallpaper & Karakter</span>
+  </button>
+
+  <!-- ==========================================
+       CUSTOMIZER MODAL (Fitur Merubah Gambar PNG Transparan & Parallax)
+       ========================================== -->
+  <div id="customizer-modal" class="fixed inset-0 z-50 hidden bg-black/70 backdrop-blur-md justify-end transition-all duration-300">
+    <div class="bg-[#15021f]/95 border-l border-white/15 w-full max-w-md h-full p-6 lg:p-8 flex flex-col justify-between overflow-y-auto custom-scroll shadow-2xl text-white">
+      <div>
+        <div class="flex items-center justify-between pb-5 border-b border-white/10">
+          <div>
+            <h2 class="text-lg font-bold tracking-tight">Kustomisasi Karakter & Parallax</h2>
+            <p class="text-xs text-white/60">Gunakan file PNG transparan untuk efek wallpaper layering</p>
+          </div>
+          <button onclick="toggleCustomizerModal()" class="p-2 rounded-full hover:bg-white/10 text-white/60 hover:text-white transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
+        </div>
+
+        <!-- 1. Upload Local PNG File -->
+        <div class="mt-6">
+          <label class="text-xs uppercase font-bold tracking-wider text-accent block mb-2">1. Upload File PNG (Transparan)</label>
+          <div class="border-2 border-dashed border-white/20 hover:border-accent rounded-2xl p-5 text-center bg-white/5 hover:bg-white/10 transition-all cursor-pointer relative group">
+            <input type="file" id="local-file-input" accept="image/png,image/webp" onchange="handleLocalFileUpload(event)" class="absolute inset-0 opacity-0 cursor-pointer w-full h-full" />
+            <svg class="w-8 h-8 text-white/50 group-hover:text-accent mx-auto mb-2 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+            </svg>
+            <div class="text-xs font-semibold text-white">Pilih file PNG dari komputer</div>
+            <div class="text-[10px] text-white/50 mt-1">PNG transparan tanpa background (Layer 2)</div>
+          </div>
+        </div>
+
+        <!-- 2. Preset Characters (PNG) -->
+        <div class="mt-6">
+          <label class="text-xs uppercase font-bold tracking-wider text-accent block mb-3">2. Pilihan Karakter Preset</label>
+          <div class="grid grid-cols-2 gap-2.5">
+            <button onclick="setPresetCharacter('default')" class="p-2.5 rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 text-left flex items-center gap-3 transition-all focus:border-accent">
+              <img src="assets/default_character.png" class="w-10 h-10 object-contain bg-black/40 rounded-lg p-1" />
+              <div>
+                <div class="text-xs font-semibold">Aesthetic Anime</div>
+                <div class="text-[10px] text-white/50">Magenta Glow</div>
+              </div>
+            </button>
+
+            <button onclick="setPresetCharacter('anime2')" class="p-2.5 rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 text-left flex items-center gap-3 transition-all focus:border-accent">
+              <img src="https://pngimg.com/d/anime_girl_PNG28.png" class="w-10 h-10 object-contain bg-black/40 rounded-lg p-1" />
+              <div>
+                <div class="text-xs font-semibold">Anime Vocal</div>
+                <div class="text-[10px] text-white/50">Purple Vibe</div>
+              </div>
+            </button>
+
+            <button onclick="setPresetCharacter('samurai')" class="p-2.5 rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 text-left flex items-center gap-3 transition-all focus:border-accent">
+              <img src="https://pngimg.com/d/samurai_PNG34.png" class="w-10 h-10 object-contain bg-black/40 rounded-lg p-1" />
+              <div>
+                <div class="text-xs font-semibold">Cyber Samurai</div>
+                <div class="text-[10px] text-white/50">Crimson Blade</div>
+              </div>
+            </button>
+
+            <button onclick="setPresetCharacter('astronaut')" class="p-2.5 rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 text-left flex items-center gap-3 transition-all focus:border-accent">
+              <img src="https://pngimg.com/d/astronaut_PNG8.png" class="w-10 h-10 object-contain bg-black/40 rounded-lg p-1" />
+              <div>
+                <div class="text-xs font-semibold">Astronaut</div>
+                <div class="text-[10px] text-white/50">Cyan Cosmos</div>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <!-- 3. Custom Image URL (PNG) -->
+        <div class="mt-6">
+          <label class="text-xs uppercase font-bold tracking-wider text-accent block mb-2">3. Masukkan URL PNG Gambar</label>
+          <div class="flex gap-2">
+            <input
+              id="custom-png-url"
+              type="text"
+              placeholder="https://.../character.png"
+              class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-2 text-xs text-white placeholder-white/40 outline-none focus:border-accent"
+            />
+            <button onclick="applyCustomUrl()" class="px-4 py-2 rounded-xl bg-white text-black font-bold text-xs uppercase tracking-wider hover:bg-white/90 shrink-0">Terapkan</button>
+          </div>
+        </div>
+
+        <!-- 4. Dynamic Color Sync & Theme Palette -->
+        <div class="mt-6 p-4 rounded-2xl bg-white/5 border border-white/10">
+          <div class="flex items-center justify-between mb-3">
+            <div>
+              <label class="text-xs uppercase font-bold tracking-wider text-accent block">4. Warna Dinamis (Auto-Sync)</label>
+              <span class="text-[10px] text-white/50">Latar & fade mengikuti warna wallpaper</span>
+            </div>
+            <!-- Auto-sync Toggle -->
+            <button id="auto-color-toggle-btn" onclick="toggleAutoColorSync()" class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none bg-emerald-500" title="Aktifkan/Nonaktifkan Auto-Sync">
+              <span id="auto-color-toggle-dot" class="inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out translate-x-5"></span>
+            </button>
+          </div>
+
+          <!-- Color Swatch Indicator -->
+          <div class="flex items-center justify-between pt-2 border-t border-white/10">
+            <div class="flex items-center gap-2.5">
+              <div id="color-swatch-preview" class="w-6 h-6 rounded-full border-2 border-white/40 shadow-sm" style="background-color: var(--accent-color, #d946ef);"></div>
+              <span id="color-swatch-hex" class="font-mono text-xs font-semibold text-white/90">#d946ef</span>
+            </div>
+            <span id="color-swatch-mode" class="text-[10px] text-emerald-400 font-mono">Auto-Sync Aktif</span>
+          </div>
+
+          <!-- Manual Color Palette Presets -->
+          <div class="mt-3 pt-3 border-t border-white/10">
+            <span class="text-[10px] text-white/50 block mb-2">Preset Warna Manual (Opsional):</span>
+            <div class="flex items-center justify-between gap-1.5">
+              <button onclick="setManualColorPreset('#d946ef')" title="Magenta" class="w-7 h-7 rounded-full bg-[#d946ef] border-2 border-white/20 hover:scale-110 hover:border-white transition-all"></button>
+              <button onclick="setManualColorPreset('#06b6d4')" title="Cyber Cyan" class="w-7 h-7 rounded-full bg-[#06b6d4] border-2 border-white/20 hover:scale-110 hover:border-white transition-all"></button>
+              <button onclick="setManualColorPreset('#10b981')" title="Neon Emerald" class="w-7 h-7 rounded-full bg-[#10b981] border-2 border-white/20 hover:scale-110 hover:border-white transition-all"></button>
+              <button onclick="setManualColorPreset('#f43f5e')" title="Crimson Ruby" class="w-7 h-7 rounded-full bg-[#f43f5e] border-2 border-white/20 hover:scale-110 hover:border-white transition-all"></button>
+              <button onclick="setManualColorPreset('#f59e0b')" title="Sunset Amber" class="w-7 h-7 rounded-full bg-[#f59e0b] border-2 border-white/20 hover:scale-110 hover:border-white transition-all"></button>
+              <button onclick="setManualColorPreset('#8b5cf6')" title="Violet Royal" class="w-7 h-7 rounded-full bg-[#8b5cf6] border-2 border-white/20 hover:scale-110 hover:border-white transition-all"></button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5. Mode Skala Foto (Cover Full vs Contain) -->
+        <div class="mt-6">
+          <label class="text-xs uppercase font-bold tracking-wider text-accent block mb-2">5. Ukuran / Skala Foto</label>
+          <div class="grid grid-cols-2 gap-2">
+            <button type="button" id="btn-fit-cover" onclick="setImageFitMode('cover')" class="py-2.5 px-3 rounded-xl border border-accent bg-accent-subtle text-white font-semibold text-xs flex items-center justify-center gap-1.5 transition-all">
+              <span>Full Layar (Cover)</span>
+            </button>
+            <button type="button" id="btn-fit-contain" onclick="setImageFitMode('contain')" class="py-2.5 px-3 rounded-xl border border-white/10 bg-white/5 text-white/70 hover:text-white font-semibold text-xs flex items-center justify-center gap-1.5 transition-all">
+              <span>Fit Tengah (Contain)</span>
+            </button>
+          </div>
+          <span class="text-[10px] text-white/50 block mt-1.5">Gunakan <b>Full Layar</b> agar foto background memenuhi seluruh layar tanpa garis atau potongan warna.</span>
+        </div>
+
+        <!-- 6. Fog Fade Start Slider -->
+        <div class="mt-6">
+          <div class="flex justify-between items-center mb-2">
+            <label class="text-xs uppercase font-bold tracking-wider text-accent">6. Efek Fog Fade Bawah</label>
+            <span id="fog-val-label" class="text-xs font-mono text-white/70">100% (Off)</span>
+          </div>
+          <input
+            id="fog-slider"
+            type="range"
+            min="30"
+            max="100"
+            value="100"
+            oninput="updateFogPosition(this.value)"
+            class="w-full accent-pink-500 cursor-pointer"
+          />
+          <div class="flex justify-between text-[10px] text-white/40 mt-1">
+            <span>Fade Tinggi (30%)</span>
+            <span>Halus (65%)</span>
+            <span>Tanpa Potongan (100%)</span>
+          </div>
+        </div>
+
+        <!-- 7. Edit Greeting Name -->
+        <div class="mt-6">
+          <label class="text-xs uppercase font-bold tracking-wider text-accent block mb-2">7. Nama Sapaan</label>
+          <input
+            id="user-name-input"
+            type="text"
+            value="Bagus"
+            oninput="updateUserName(this.value)"
+            class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-2.5 text-xs text-white outline-none focus:border-accent"
+          />
+        </div>
+      </div>
+
+      <!-- Footer Reset / Save -->
+      <div class="pt-6 border-t border-white/10 flex items-center justify-between text-xs">
+        <button onclick="resetDefaults()" class="text-white/60 hover:text-white transition-colors">Reset ke Default</button>
+        <button onclick="toggleCustomizerModal()" class="bg-white text-black font-bold px-6 py-2 rounded-full hover:bg-white/90">Selesai</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-white text-black px-5 py-2.5 rounded-full text-xs font-semibold shadow-2xl flex items-center gap-2 pointer-events-none">
+    <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+    <span id="toast-text">Berhasil diubah</span>
+  </div>
+
+  <!-- Interactive JavaScript Logic -->
+  <script>
+    // Search Engines Configuration
+    let activeEngine = 'google';
+    const engines = {
+      google: { url: 'https://www.google.com/search?q=', name: 'Google' },
+      duckduckgo: { url: 'https://duckduckgo.com/?q=', name: 'DuckDuckGo' },
+      youtube: { url: 'https://www.youtube.com/results?search_query=', name: 'YouTube' },
+      github: { url: 'https://github.com/search?q=', name: 'GitHub' }
+    };
+
+    // Character Presets (Clean transparent PNGs with fallback themes)
+    const presetCharacters = {
+      default: {
+        url: 'assets/default_character.png',
+        fallbackColor: { r: 217, g: 70, b: 239 }, // Luxury Magenta
+        name: 'Aesthetic Anime'
+      },
+      anime2: {
+        url: 'https://pngimg.com/d/anime_girl_PNG28.png',
+        fallbackColor: { r: 168, g: 85, b: 247 }, // Soft Purple
+        name: 'Anime Vocal'
+      },
+      samurai: {
+        url: 'https://pngimg.com/d/samurai_PNG34.png',
+        fallbackColor: { r: 239, g: 68, b: 68 }, // Crimson Red
+        name: 'Cyber Samurai'
+      },
+      astronaut: {
+        url: 'https://pngimg.com/d/astronaut_PNG8.png',
+        fallbackColor: { r: 6, g: 182, b: 212 }, // Cyan Space
+        name: 'Astronaut'
+      }
+    };
+
+    let userName = 'Bagus';
+
+    // Dynamic Theme & Color Extraction State
+    let isAutoColorSync = localStorage.getItem('aurora_auto_color') !== 'false';
+    let currentPrimaryRGB = { r: 217, g: 70, b: 239 }; // Default luxury magenta
+
+    // Parallax Physics Variables
+    let targetX = 0;
+    let targetY = 0;
+    let currentX = 0;
+    let currentY = 0;
+    let isParallaxActive = true;
+
+    window.addEventListener('DOMContentLoaded', () => {
+      // 1. Restore Custom Character
+      const savedCharacter = localStorage.getItem('aurora_character');
+      const charImg = document.getElementById('character-image');
+      if (savedCharacter) {
+        charImg.src = savedCharacter;
+      }
+
+      // 2. Restore User Name
+      const savedName = localStorage.getItem('aurora_username');
+      if (savedName) {
+        userName = savedName;
+        document.getElementById('user-name-input').value = savedName;
+      }
+
+      // 3. Restore Fog Slider (Default 100 = No cutoff / seamless full screen)
+      const savedFog = localStorage.getItem('aurora_fog') || '100';
+      updateFogPosition(savedFog, false);
+      const fogSlider = document.getElementById('fog-slider');
+      if (fogSlider) fogSlider.value = savedFog;
+
+      // 4. Restore Fit Mode (Default cover = Full Screen Edge-to-Edge)
+      const savedFit = localStorage.getItem('aurora_fit_mode') || 'cover';
+      setImageFitMode(savedFit, false);
+
+      // 5. Restore or Initialize Theme Palette
+      updateAutoSyncUI();
+      const savedTheme = localStorage.getItem('aurora_theme_primary');
+      if (savedTheme) {
+        try {
+          applyDynamicPalette(JSON.parse(savedTheme), false);
+        } catch (e) {
+          applyDynamicPalette(presetCharacters.default.fallbackColor, false);
+        }
+      } else {
+        applyDynamicPalette(presetCharacters.default.fallbackColor, false);
+      }
+
+      // 6. Hook Character Image Load Event for Automatic Color Extraction
+      charImg.addEventListener('load', () => {
+        if (isAutoColorSync) {
+          extractThemeFromImage(charImg);
+        }
+      });
+
+      // If already loaded from cache
+      if (charImg.complete && isAutoColorSync) {
+        setTimeout(() => extractThemeFromImage(charImg), 100);
+      }
+
+      // Start Clock & Dynamic Greeting
+      updateClockAndGreeting();
+      setInterval(updateClockAndGreeting, 1000);
+
+      // Support URL params for quick testing & direct links
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('modal') === '1') {
+        toggleCustomizerModal();
+      }
+      if (urlParams.get('preset') && presetCharacters[urlParams.get('preset')]) {
+        setPresetCharacter(urlParams.get('preset'));
+      }
+      if (urlParams.get('color')) {
+        setManualColorPreset('#' + urlParams.get('color').replace('#', ''));
+      }
+      if (urlParams.get('fit')) {
+        setImageFitMode(urlParams.get('fit'));
+      }
+
+      // Start Parallax Animation Loop
+      requestAnimationFrame(renderParallax);
+    });
+
+    // Parallax Mouse Interaction (Layer 1 Background & Layer 2 Character)
+    window.addEventListener('mousemove', (e) => {
+      if (!isParallaxActive) return;
+      const x = (e.clientX / window.innerWidth) - 0.5;
+      const y = (e.clientY / window.innerHeight) - 0.5;
+
+      // Character shifts opposite to mouse for 3D depth
+      targetX = x * -28;
+      targetY = y * -20;
+    });
+
+    function renderParallax() {
+      // Smooth lerp interpolation
+      currentX += (targetX - currentX) * 0.08;
+      currentY += (targetY - currentY) * 0.08;
+
+      const container = document.getElementById('parallax-container');
+      if (container) {
+        container.style.transform = `translate3d(${currentX}px, ${currentY}px, 0)`;
+      }
+
+      requestAnimationFrame(renderParallax);
+    }
+
+    // Live Clock & Dynamic Greeting based on time
+    function updateClockAndGreeting() {
+      const now = new Date();
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const seconds = String(now.getSeconds()).padStart(2, '0');
+
+      const timeEl = document.getElementById('clock-time');
+      const secEl = document.getElementById('clock-seconds');
+      if (timeEl) timeEl.textContent = `${hours}:${minutes}`;
+      if (secEl) secEl.textContent = seconds;
+
+      const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      const dateEl = document.getElementById('clock-date');
+      if (dateEl) dateEl.textContent = now.toLocaleDateString('en-US', dateOptions);
+
+      // Greeting
+      let greeting = 'Good Evening';
+      const h = now.getHours();
+      if (h >= 5 && h < 12) greeting = 'Good Morning';
+      else if (h >= 12 && h < 17) greeting = 'Good Afternoon';
+      else if (h >= 17 && h < 22) greeting = 'Good Evening';
+      else greeting = 'Good Night';
+
+      const greetingEl = document.getElementById('welcome-greeting');
+      if (greetingEl) {
+        greetingEl.innerHTML = `${greeting}, <span class="font-normal text-accent">${escapeHtml(userName)}</span>.`;
+      }
+    }
+
+    // ==========================================
+    // Dynamic Theme Extraction & Palette Engine
+    // ==========================================
+    function rgbToHex(r, g, b) {
+      return '#' + [r, g, b].map(x => {
+        const hex = Math.max(0, Math.min(255, Math.round(x))).toString(16);
+        return hex.length === 1 ? '0' + hex : hex;
+      }).join('');
+    }
+
+    function hexToRgb(hex) {
+      const cleanHex = hex.replace('#', '');
+      const num = parseInt(cleanHex, 16);
+      return {
+        r: (num >> 16) & 255,
+        g: (num >> 8) & 255,
+        b: num & 255
+      };
+    }
+
+    function extractThemeFromImage(imgElement) {
+      if (!isAutoColorSync) return;
+
+      // Check if it matches default silhouette
+      if (imgElement.src.includes('assets/default_character.png')) {
+        applyDynamicPalette(presetCharacters.default.fallbackColor);
+        return;
+      }
+
+      // Check presets with predefined theme
+      for (const key in presetCharacters) {
+        if (key !== 'default' && imgElement.src === presetCharacters[key].url) {
+          applyDynamicPalette(presetCharacters[key].fallbackColor);
+          return;
+        }
+      }
+
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d', { willReadFrequently: true });
+      const sampleSize = 64;
+      canvas.width = sampleSize;
+      canvas.height = sampleSize;
+
+      try {
+        ctx.drawImage(imgElement, 0, 0, sampleSize, sampleSize);
+        const imgData = ctx.getImageData(0, 0, sampleSize, sampleSize).data;
+
+        let vibrantBuckets = [];
+
+        for (let i = 0; i < imgData.length; i += 4) {
+          const r = imgData[i];
+          const g = imgData[i + 1];
+          const b = imgData[i + 2];
+          const a = imgData[i + 3];
+
+          // Skip transparent or near-transparent pixels
+          if (a < 75) continue;
+
+          const max = Math.max(r, g, b);
+          const min = Math.min(r, g, b);
+          const delta = max - min;
+          const saturation = max === 0 ? 0 : delta / max;
+          const brightness = 0.299 * r + 0.587 * g + 0.114 * b;
+
+          // Target vibrant colors (avoid dark shadows and pure white highlights)
+          if (saturation > 0.18 && brightness > 30 && brightness < 235) {
+            const weight = saturation * (1 - Math.abs(brightness - 128) / 140);
+            vibrantBuckets.push({ r, g, b, weight });
+          }
+        }
+
+        if (vibrantBuckets.length >= 10) {
+          vibrantBuckets.sort((a, b) => b.weight - a.weight);
+          const sampleCount = Math.min(30, vibrantBuckets.length);
+          let sumR = 0, sumG = 0, sumB = 0;
+          for (let i = 0; i < sampleCount; i++) {
+            sumR += vibrantBuckets[i].r;
+            sumG += vibrantBuckets[i].g;
+            sumB += vibrantBuckets[i].b;
+          }
+          const detectedColor = {
+            r: Math.round(sumR / sampleCount),
+            g: Math.round(sumG / sampleCount),
+            b: Math.round(sumB / sampleCount)
+          };
+          applyDynamicPalette(detectedColor);
+          return;
+        }
+
+        // If low saturation/monochrome, fallback to signature luxury magenta
+        applyDynamicPalette(presetCharacters.default.fallbackColor);
+      } catch (err) {
+        console.warn('Canvas extract blocked (likely CORS on external image), applying fallback theme:', err);
+        // Find if preset exists
+        for (const key in presetCharacters) {
+          if (imgElement.src.includes(key)) {
+            applyDynamicPalette(presetCharacters[key].fallbackColor);
+            return;
+          }
+        }
+        applyDynamicPalette(presetCharacters.default.fallbackColor);
+      }
+    }
+
+    function applyDynamicPalette(primary, save = true) {
+      currentPrimaryRGB = primary;
+      const { r, g, b } = primary;
+      const hex = rgbToHex(r, g, b);
+
+      // 1. Calculate subtle deep tones for background gradient
+      const startR = Math.round(r * 0.44);
+      const startG = Math.round(g * 0.44);
+      const startB = Math.round(b * 0.44);
+
+      const midR = Math.round(r * 0.20);
+      const midG = Math.round(g * 0.18);
+      const midB = Math.round(b * 0.26);
+
+      const endR = Math.round(r * 0.06);
+      const endG = Math.round(g * 0.05);
+      const endB = Math.round(b * 0.08);
+
+      // 2. Set Root CSS variables
+      document.documentElement.style.setProperty('--accent-color', hex);
+      document.documentElement.style.setProperty('--accent-rgb', `${r}, ${g}, ${b}`);
+
+      // 3. Update Page Background Gradient smoothly
+      const body = document.getElementById('page-body');
+      if (body) {
+        body.style.background = `linear-gradient(135deg, rgb(${startR}, ${startG}, ${startB}) 0%, rgb(${midR}, ${midG}, ${midB}) 55%, rgb(${endR}, ${endG}, ${endB}) 100%)`;
+      }
+
+      // 4. Update Ambient Radial Glow
+      const radial = document.getElementById('radial-overlay');
+      if (radial) {
+        radial.style.background = `radial-gradient(circle at 50% 40%, rgba(${r}, ${g}, ${b}, 0.35) 0%, rgba(${midR}, ${midG}, ${midB}, 0.22) 50%, rgba(0, 0, 0, 0) 80%)`;
+      }
+
+      // 5. Update Customizer Swatch UI
+      const swatch = document.getElementById('color-swatch-preview');
+      const swatchHex = document.getElementById('color-swatch-hex');
+      if (swatch) swatch.style.backgroundColor = hex;
+      if (swatchHex) swatchHex.textContent = hex;
+
+      if (save) {
+        localStorage.setItem('aurora_theme_primary', JSON.stringify(primary));
+      }
+    }
+
+    function toggleAutoColorSync() {
+      isAutoColorSync = !isAutoColorSync;
+      localStorage.setItem('aurora_auto_color', isAutoColorSync);
+      updateAutoSyncUI();
+      if (isAutoColorSync) {
+        extractThemeFromImage(document.getElementById('character-image'));
+        showToast('Auto-sync warna diaktifkan!');
+      } else {
+        showToast('Mode warna manual diaktifkan');
+      }
+    }
+
+    function updateAutoSyncUI() {
+      const toggleBtn = document.getElementById('auto-color-toggle-btn');
+      const toggleDot = document.getElementById('auto-color-toggle-dot');
+      const modeLabel = document.getElementById('color-swatch-mode');
+
+      if (!toggleBtn || !toggleDot || !modeLabel) return;
+
+      if (isAutoColorSync) {
+        toggleBtn.className = 'relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none bg-emerald-500';
+        toggleDot.className = 'inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out translate-x-5';
+        modeLabel.textContent = 'Auto-Sync Aktif';
+        modeLabel.className = 'text-[10px] text-emerald-400 font-mono';
+      } else {
+        toggleBtn.className = 'relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none bg-white/20';
+        toggleDot.className = 'inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out translate-x-0';
+        modeLabel.textContent = 'Warna Manual';
+        modeLabel.className = 'text-[10px] text-amber-400 font-mono';
+      }
+    }
+
+    function setManualColorPreset(hex) {
+      isAutoColorSync = false;
+      localStorage.setItem('aurora_auto_color', 'false');
+      updateAutoSyncUI();
+      const rgb = hexToRgb(hex);
+      applyDynamicPalette(rgb, true);
+      showToast(`Warna diubah ke: ${hex}`);
+    }
+
+    // Search Engine Handling
+    function setEngine(engineKey) {
+      activeEngine = engineKey;
+      ['google', 'duckduckgo', 'youtube', 'github'].forEach(k => {
+        const btn = document.getElementById(`engine-${k}`);
+        if (btn) {
+          if (k === engineKey) {
+            btn.className = 'text-white font-semibold underline underline-offset-4 decoration-accent transition-colors';
+          } else {
+            btn.className = 'text-white/50 hover:text-white transition-colors';
+          }
+        }
+      });
+      showToast(`Mesin pencari: ${engines[engineKey].name}`);
+    }
+
+    function handleSearch(e) {
+      e.preventDefault();
+      const input = document.getElementById('center-search-input');
+      const query = input.value.trim();
+      if (!query) return;
+
+      if (/^(http|https):\/\/[^ "]+$/.test(query) || (query.includes('.') && !query.includes(' ') && query.length > 3)) {
+        const targetUrl = query.startsWith('http') ? query : `https://${query}`;
+        window.open(targetUrl, '_blank');
+      } else {
+        window.open(engines[activeEngine].url + encodeURIComponent(query), '_blank');
+      }
+      input.value = '';
+    }
+
+    // Keyboard shortcut (press '/' to focus search)
+    window.addEventListener('keydown', (e) => {
+      const active = document.activeElement;
+      if (e.key === '/' && active.tagName !== 'INPUT') {
+        e.preventDefault();
+        const searchInput = document.getElementById('center-search-input');
+        if (searchInput) searchInput.focus();
+      } else if (e.key === 'Escape') {
+        const modal = document.getElementById('customizer-modal');
+        if (!modal.classList.contains('hidden')) {
+          toggleCustomizerModal();
+        }
+      }
+    });
+
+    // Customizer Modal Logic
+    function toggleCustomizerModal() {
+      const modal = document.getElementById('customizer-modal');
+      if (modal.classList.contains('hidden')) {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+      } else {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      }
+    }
+
+    // 1. Handle Local File Upload (PNG FileReader)
+    function handleLocalFileUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      if (!file.type.includes('png') && !file.type.includes('webp')) {
+        showToast('Harap pilih file PNG transparan!');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const dataUrl = e.target.result;
+        const charImg = document.getElementById('character-image');
+        charImg.src = dataUrl;
+        try {
+          localStorage.setItem('aurora_character', dataUrl);
+          showToast('Karakter PNG & warna latar berhasil diterapkan!');
+        } catch (err) {
+          showToast('Karakter diterapkan (Ukuran besar)');
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // 2. Preset Characters
+    function setPresetCharacter(key) {
+      const preset = presetCharacters[key];
+      if (preset) {
+        const charImg = document.getElementById('character-image');
+        charImg.src = preset.url;
+        localStorage.setItem('aurora_character', preset.url);
+        if (isAutoColorSync) {
+          applyDynamicPalette(preset.fallbackColor);
+        }
+        showToast(`Preset: ${preset.name} diterapkan!`);
+      }
+    }
+
+    // 3. Custom PNG URL
+    function applyCustomUrl() {
+      const input = document.getElementById('custom-png-url');
+      const url = input.value.trim();
+      if (url) {
+        const charImg = document.getElementById('character-image');
+        charImg.src = url;
+        localStorage.setItem('aurora_character', url);
+        showToast('URL gambar karakter diterapkan!');
+        input.value = '';
+      }
+    }
+
+    // Image Fit Mode (Cover Full Screen vs Contain)
+    let currentFitMode = 'cover';
+    function setImageFitMode(mode, save = true) {
+      currentFitMode = mode;
+      const img = document.getElementById('character-image');
+      const btnCover = document.getElementById('btn-fit-cover');
+      const btnContain = document.getElementById('btn-fit-contain');
+
+      if (!img) return;
+
+      if (mode === 'cover') {
+        img.className = 'w-full h-full object-cover object-center select-none transition-all duration-300';
+        if (btnCover) btnCover.className = 'py-2.5 px-3 rounded-xl border border-accent bg-accent-subtle text-white font-semibold text-xs flex items-center justify-center gap-1.5 transition-all';
+        if (btnContain) btnContain.className = 'py-2.5 px-3 rounded-xl border border-white/10 bg-white/5 text-white/70 hover:text-white font-semibold text-xs flex items-center justify-center gap-1.5 transition-all';
+      } else {
+        img.className = 'max-h-[82vh] max-w-[85vw] w-auto h-auto object-contain object-center select-none transition-all duration-300 drop-shadow-[0_15px_30px_rgba(0,0,0,0.5)]';
+        if (btnContain) btnContain.className = 'py-2.5 px-3 rounded-xl border border-accent bg-accent-subtle text-white font-semibold text-xs flex items-center justify-center gap-1.5 transition-all';
+        if (btnCover) btnCover.className = 'py-2.5 px-3 rounded-xl border border-white/10 bg-white/5 text-white/70 hover:text-white font-semibold text-xs flex items-center justify-center gap-1.5 transition-all';
+      }
+
+      if (save) localStorage.setItem('aurora_fit_mode', mode);
+    }
+
+    // 4. Fog Mask Slider (Seamless full screen when 100%)
+    function updateFogPosition(val, save = true) {
+      const img = document.getElementById('character-image');
+      if (!img) return;
+      const numVal = parseInt(val, 10);
+      const label = document.getElementById('fog-val-label');
+
+      if (numVal >= 100) {
+        img.style.maskImage = 'none';
+        img.style.webkitMaskImage = 'none';
+        if (label) label.textContent = '100% (Off)';
+      } else {
+        const fogCSS = `linear-gradient(to bottom, rgba(0,0,0,1) ${val}%, rgba(0,0,0,0) 100%)`;
+        img.style.maskImage = fogCSS;
+        img.style.webkitMaskImage = fogCSS;
+        if (label) label.textContent = `${val}%`;
+      }
+
+      if (save) localStorage.setItem('aurora_fog', val);
+    }
+
+    // 5. Update Name
+    function updateUserName(name) {
+      userName = name.trim() || 'Bagus';
+      localStorage.setItem('aurora_username', userName);
+      updateClockAndGreeting();
+    }
+
+    // Reset Defaults
+    function resetDefaults() {
+      localStorage.removeItem('aurora_character');
+      localStorage.removeItem('aurora_username');
+      localStorage.removeItem('aurora_fog');
+      localStorage.removeItem('aurora_fit_mode');
+      localStorage.removeItem('aurora_auto_color');
+      localStorage.removeItem('aurora_theme_primary');
+
+      const charImg = document.getElementById('character-image');
+      charImg.src = presetCharacters.default.url;
+      userName = 'Bagus';
+      document.getElementById('user-name-input').value = 'Bagus';
+      updateFogPosition(100, false);
+      document.getElementById('fog-slider').value = 100;
+      setImageFitMode('cover', false);
+
+      isAutoColorSync = true;
+      updateAutoSyncUI();
+      applyDynamicPalette(presetCharacters.default.fallbackColor, false);
+      updateClockAndGreeting();
+      showToast('Pengaturan direset ke default');
+    }
+
+    // Helper: Toast
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      const text = document.getElementById('toast-text');
+      text.textContent = msg;
+      toast.classList.remove('translate-y-20', 'opacity-0');
+      setTimeout(() => toast.classList.add('translate-y-20', 'opacity-0'), 2400);
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/[&<>"']/g, function(m) {
+        return ({
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          '"': '&quot;',
+          "'": '&#039;'
+        })[m];
+      });
+    }
+  </script>
+</body>
+</html>
